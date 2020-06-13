@@ -6,7 +6,7 @@
 #include <iostream>
 using namespace std;
 
-ALGraph read_graph(int& v0){
+ALGraph read_algraph(int& v0){
     int n, m;
     cin >> n >> m >> v0;
     ALGraph G(n, vector<Neighbour>());
@@ -17,4 +17,10 @@ ALGraph read_graph(int& v0){
         G[w].push_back(Neighbour(v, p));
     }
     return G;
+}
+
+ALGraph shortestEdge(ALGraph g){
+    ALGraph h;
+
+    return h;
 }
