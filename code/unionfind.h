@@ -10,14 +10,14 @@
 using namespace std;
 
 // UnionFind
-template <class T>
 class UnionFind{
 public:
-    UnionFind;
+    UnionFind(int n);
+    int find(int n);
+    void unionTree(int a, int b);
 private:
-    vector<T> height;
-    vector<T> father;
-
+    vector<int> height;
+    vector<int> father;
 };
 
 #endif //CODE_TREE_H

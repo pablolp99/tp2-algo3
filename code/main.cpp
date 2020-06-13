@@ -1,9 +1,9 @@
 #include <iostream>
 #include "graphs.h"
-#include <vector>
 #include "unionfind.h"
+#include <vector>
 
 
 int main() {
-
+    return 0;
 }

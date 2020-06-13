@@ -1,9 +1,6 @@
-//
-// Created by pablo on 6/13/20.
-//
-
-#include "graphs.h"
 #include <iostream>
+#include "graphs.h"
+#include "unionfind.hpp"
 using namespace std;
 
 ALGraph read_algraph(int& v0){
@@ -19,8 +16,9 @@ ALGraph read_algraph(int& v0){
     return G;
 }
 
-ALGraph shortestEdge(ALGraph g){
+ALGraph shortestEdge(ALGraph g, int n){
     ALGraph h;
-
+    vector<int> solution = {};
+    UnionFind uf = UnionFind(n);
     return h;
 }

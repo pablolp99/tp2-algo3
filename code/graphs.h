@@ -6,10 +6,6 @@
 #define CODE_GRAPHS_H
 
 #include <vector>
-#include <assert.h>
-#include <string>
-#include <iostream>
-#include "unionfind.h"
 
 // Adjacency List Graph (ALGraph)
 typedef int Vertex;
@@ -25,7 +21,5 @@ typedef std::vector<std::vector<Neighbour>> ALGraph;
 ALGraph readAlgraph(int& v0);
 ALGraph shortestEdge(ALGraph g);
 
-int find(int n);
-void unionGraph(int a, int b);
 
 #endif //CODE_GRAPHS_H
