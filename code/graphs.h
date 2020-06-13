@@ -10,13 +10,13 @@
 // Listas de Adyacencia
 typedef int Vertex;
 typedef int Weight;
-struct Neigbour{
+struct Neighbour{
     Vertex dst;
     Weight wgh;
-    Neigbour(Vertex d, Weight w)
+    Neighbour(Vertex d, Weight w)
             : dst(d), wgh(w) {}
 };
-typedef std::vector<std::vector<Neigbour>> ALGraph;
+typedef std::vector<std::vector<Neighbour>> ALGraph;
 
 ALGraph read_graph(int& v0);
 
