@@ -6,5 +6,6 @@
 
 int main() {
     Graph g = readGraph();
+    Graph h = shortestEdge(g);
     return 0;
 }

@@ -6,28 +6,25 @@
 #define CODE_GRAPHS_H
 
 #include <vector>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 typedef int Vertex;
 typedef int Weight;
 typedef int Degree;
+typedef tuple<Vertex, Vertex, Weight> Edge;
 
-struct Edge{
-    Vertex u;
-    Vertex v;
-    Weight weight;
-    Edge(Vertex v1, Vertex v2, Weight w)
-        : u(v1), v(v2), weight(w) {}
-};
+bool sortbythr(const tuple<int, int, int>& a, const tuple<int, int, int>& b);
 
 struct Graph{
-    vector<Edge> edges;
-    vector<Degree> degrees;
-    Graph(vector<Edge> es, vector<Degree> ds)
-        : edges(es), degrees(ds) {}
+    vector<tuple<Vertex, Vertex, Weight>> edges;
+    int nodes;
+    Graph(vector<Edge> es, int ds)
+        : edges(es), nodes(ds) {}
 };
 
 Graph readGraph();
+Graph shortestEdge(Graph g);
 
 #endif //CODE_GRAPHS_H
