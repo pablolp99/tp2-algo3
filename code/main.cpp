@@ -5,5 +5,6 @@
 
 
 int main() {
+    Graph g = readGraph();
     return 0;
 }

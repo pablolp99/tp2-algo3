@@ -1,7 +1,3 @@
-//
-// Created by pablo on 6/13/20.
-//
-
 #ifndef CODE_TREE_H
 #define CODE_TREE_H
 

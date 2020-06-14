@@ -3,22 +3,20 @@
 #include "unionfind.hpp"
 using namespace std;
 
-ALGraph read_algraph(int& v0){
+Graph readGraph(){
     int n, m;
-    cin >> n >> m >> v0;
-    ALGraph G(n, vector<Neighbour>());
+    cin >> n >> m;
+    vector<Edge> edges;
+    // El degree 0 no vale nada. Solo esta por la generacion
+    // del vector de degrees
+    vector<Degree> degrees(n, 0);
     for (int i = 0; i < m; ++i){
-        int v,w,p;
-        cin >> v >> w >> p;
-        G[v].push_back(Neighbour(w, p));
-        G[w].push_back(Neighbour(v, p));
+        Vertex a,b;
+        Weight k;
+        cin >> a >> b >> k;
+        ++degrees[a];
+        ++degrees[b];
+        edges.push_back(Edge(a,b,k));
     }
-    return G;
-}
-
-ALGraph shortestEdge(ALGraph g, int n){
-    ALGraph h;
-    vector<int> solution = {};
-    UnionFind uf = UnionFind(n);
-    return h;
+    return Graph(edges, degrees);
 }

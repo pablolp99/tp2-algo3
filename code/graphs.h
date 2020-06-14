@@ -7,19 +7,27 @@
 
 #include <vector>
 
-// Adjacency List Graph (ALGraph)
+using namespace std;
+
 typedef int Vertex;
 typedef int Weight;
-struct Neighbour{
-    Vertex dst;
-    Weight wgh;
-    Neighbour(Vertex d, Weight w)
-            : dst(d), wgh(w) {}
+typedef int Degree;
+
+struct Edge{
+    Vertex u;
+    Vertex v;
+    Weight weight;
+    Edge(Vertex v1, Vertex v2, Weight w)
+        : u(v1), v(v2), weight(w) {}
 };
-typedef std::vector<std::vector<Neighbour>> ALGraph;
 
-ALGraph readAlgraph(int& v0);
-ALGraph shortestEdge(ALGraph g);
+struct Graph{
+    vector<Edge> edges;
+    vector<Degree> degrees;
+    Graph(vector<Edge> es, vector<Degree> ds)
+        : edges(es), degrees(ds) {}
+};
 
+Graph readGraph();
 
 #endif //CODE_GRAPHS_H
