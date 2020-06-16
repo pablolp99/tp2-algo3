@@ -5,7 +5,8 @@
 
 
 int main() {
-    Graph g = readGraph();
-    Graph h = shortestEdge(g);
+    ALGraph g = readALGraph();
+    vector<int> res = nearestNeighbour(g);
     return 0;
 }
+
