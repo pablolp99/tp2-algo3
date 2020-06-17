@@ -13,7 +13,6 @@ using namespace std;
 typedef int Vertex;
 typedef int Weight;
 typedef tuple<Vertex, Vertex, Weight> Edge;
-typedef set<int> Nodes;
 typedef int Degree;
 
 bool sortbythr(const tuple<int, int, int>& a, const tuple<int, int, int>& b);
@@ -26,12 +25,16 @@ struct Graph{
 };
 
 Graph readGraph();
-Graph shortestEdge(Graph g);
+vector<Edge> shortestEdge(Graph& g);
 
 typedef vector<vector<pair<Vertex, Weight> >> ALGraph;
 
 ALGraph readALGraph();
 pair<Vertex, Weight> minimumEdge();
-vector<int> nearestNeighbour(ALGraph g);
+vector<int> nearestNeighbour(ALGraph& g);
+
+ALGraph primMST(ALGraph& g);
+pair<vector<int>, vector<int>> dfs(ALGraph& g);
+void heurisitcAgm(ALGraph g);
 
 #endif //CODE_GRAPHS_H

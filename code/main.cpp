@@ -5,8 +5,12 @@
 
 
 int main() {
+//    Graph g = readGraph();
+//    vector<Edge> e = shortestEdge(g);
     ALGraph g = readALGraph();
-    vector<int> res = nearestNeighbour(g);
+    ALGraph prim = primMST(g);
+    dfs(prim);
+//    vector<int> res = nearestNeighbour(g);
     return 0;
 }
 

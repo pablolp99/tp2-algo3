@@ -3,9 +3,9 @@
 
 UnionFind::UnionFind(int n) {
     height = vector<int>(n,1);
-    father = vector<int>(0);
+    father = vector<int>(n);
     for (int i = 0; i < n; ++i){
-        father.push_back(i);
+        father[i] = i;
     }
 }
 

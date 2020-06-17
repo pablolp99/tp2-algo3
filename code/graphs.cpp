@@ -48,7 +48,7 @@ pair<Vertex, Weight> minimumEdge(ALGraph& g, int& v, vector<bool>& flag){
     return w;
 }
 
-vector<int> nearestNeighbour(ALGraph g){
+vector<int> nearestNeighbour(ALGraph& g){
     int v = 0;
     vector<int> nodes = {v};
     int nodeCount = g.size();
@@ -64,7 +64,7 @@ vector<int> nearestNeighbour(ALGraph g){
     return nodes;
 }
 
-Graph shortestEdge(Graph g){
+vector<Edge> shortestEdge(Graph& g){
     vector<Edge> sol;
     vector<Degree> deg(g.nodeCount, 0);
     UnionFind uf = UnionFind(g.nodeCount);
@@ -79,5 +79,72 @@ Graph shortestEdge(Graph g){
             }
         }
     }
-    return Graph(sol, g.nodeCount);
+    return sol;
+}
+
+ALGraph primMST(ALGraph& g){
+    vector<int> distance(g.size(), INFINITY);
+    vector<bool> visited(g.size(), false);
+    priority_queue<pair<int, int>, vector<pair<int,int>>, greater<pair<int, int>> > queue;
+
+    int s = 0;
+    distance[s] = 0;
+    queue.push(make_pair(s, distance[s]));
+
+    ALGraph res(g.size());
+
+    while (!queue.empty()){
+        pair<int, int> u = queue.top();
+        queue.pop();
+        if (visited[u.first]){
+            continue;
+        }
+        visited[u.first] = true;
+        for (pair<int, int> w : g[u.first]){
+            if (!visited[w.first] && distance[w.first] > w.second){
+                distance[w.first] = w.second;
+                res[u.first].push_back(w);
+                res[w.first].push_back(make_pair(u.first, w.second));
+                queue.push(w);
+            }
+        }
+    }
+    return res;
+}
+
+pair<vector<int>, vector<int>> dfs(ALGraph& g){
+    int next = 1;
+    int root = 0;
+    stack<int> list;
+    vector<bool> visited(g.size(), false);
+    vector<int> pred(g.size(), 0);
+    vector<int> order(g.size(), 0);
+
+    list.push(root);
+    visited[root] = true;
+    order[root] = next;
+
+    while (!list.empty()){
+        int u = list.top();
+        int w = -1;
+        for (int i = 0; i < g[u].size(); ++i){
+            if (!visited[g[u][i].first]){
+                w = g[u][i].first;
+                pred[w] = u;
+                ++next;
+                order[w] = next;
+                list.push(w);
+                visited[w]=true;
+                break;
+            }
+        }
+        if (w == -1){
+            list.pop();
+        }
+    }
+    return make_pair(pred, order);
+}
+
+void heurisitcAgm(ALGraph g){
+
 }
