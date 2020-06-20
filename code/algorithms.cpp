@@ -148,6 +148,7 @@ vector<int> dfs(ALGraph& g){
     return order;
 }
 
+
 void heurisitcAgm(Graph& g){
     ALGraph gp = kruskalMST(g);
     int k;
