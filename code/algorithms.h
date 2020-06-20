@@ -18,7 +18,7 @@ vector<int> nearestNeighbour(ALGraph& g);
 
 ALGraph kruskalMST(ALGraph g);
 vector<int> dfs(ALGraph& g);
-ALGraph heurisitcAgm(ALGraph& g);
+pair<vector<int>, int> heurisitcAgm(ALGraph& g);
 
 
 #endif //CODE_ALGORITHMS_H

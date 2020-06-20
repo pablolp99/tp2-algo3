@@ -109,34 +109,38 @@ vector<int> dfs(ALGraph& g){
     visited[root] = true;
     order[root] = next;
 
-    while (!list.empty()){
+    while (!list.empty()) {
         int u = list.top();
         bool found = false;
-        for (Node n : g.getEdges(u)){
-            if (!visited[n.vertex]){
+        for (Node n : g.getEdges(u)) {
+            if (!visited[n.vertex]) {
                 ++next;
                 order[n.vertex] = next;
                 list.push(n.vertex);
-                visited[n.vertex]=true;
+                visited[n.vertex] = true;
                 found = true;
                 break;
             }
         }
-        if (!found){
+        if (!found) {
             list.pop();
         }
     }
     return order;
 }
 
-ALGraph heurisitcAgm(ALGraph& g){
+pair<vector<int>, int> heurisitcAgm(ALGraph& g){
     ALGraph temp_graph = kruskalMST(g);
     vector<int> order = dfs(temp_graph);
-    ALGraph ham(g.getNodeCount());
+    order.push_back(0);
+    int total_weight = 0;
     for (int i = 0; i < order.size()-1; ++i){
-        for (Node n : g.getEdges(i)){
-//        Usar addSimpleEdge
+        for (Node n : g.getEdges(order[i])){
+            if (n.vertex == order[i+1]){
+                total_weight += n.weight;
+                break;
+            }
         }
     }
-    return ham;
+    return make_pair(order,total_weight);
 }

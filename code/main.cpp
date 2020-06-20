@@ -7,7 +7,8 @@
 
 int main() {
     ALGraph g = readALGraph();
-    heurisitcAgm(g);
+    pair<vector<int>, int> res = heurisitcAgm(g);
+
 //    heurisitcAgm(g);
     return 0;
 }
