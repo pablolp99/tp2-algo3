@@ -132,8 +132,23 @@ vector<int> dfs(ALGraph& g){
 }
 
 
-void heurisitcAgm(ALGraph& g){
-    ALGraph gp = kruskalMST(g);
-    dfs(gp);
-    int k;
+ALGraph heurisitcAgm(ALGraph& g){
+    ALGraph temp_graph = kruskalMST(g);
+    vector<int> order = dfs(temp_graph);
+    ALGraph ham(g.getNodeCount());
+    for (int i = 0; i < order.size()-1; ++i){
+        for (Node e : g.getEdges(order[i])){
+            if (e.vertex == order[i+1]){
+                ham.addEdge(i, e.vertex, e.weight);
+                break;
+            }
+        }
+    }
+    for (Edge e : g.getIncidenceList()){
+        if (e.start == 0 && e.end == order[order.size()-1]){
+            ham.addEdge(e.start, e.end, e.weight);
+            break;
+        }
+    }
+    return ham;
 }
