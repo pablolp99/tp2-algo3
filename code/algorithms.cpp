@@ -70,7 +70,7 @@ vector<Edge> shortestEdge(ALGraph& g){
     vector<Edge> sol;
     vector<Degree> deg(g.getNodeCount(), 0);
     UnionFind uf = UnionFind(g.getNodeCount());
-    g.sortGraph();
+    g.sortAL();
     for (Edge e : g.getIncidenceList()){
         if (uf.find(e.start) != uf.find(e.end)){
             if (deg[e.start] <= 1 && deg[e.end] <= 1){
@@ -87,7 +87,7 @@ vector<Edge> shortestEdge(ALGraph& g){
 
 ALGraph kruskalMST(ALGraph g){
     UnionFind uf(g.getIncidenceList().size());
-    g.sortGraph();
+    g.sortAL();
     ALGraph sol(g.getNodeCount());
     for (Edge e : g.getIncidenceList()){
         if (uf.find(e.start) != uf.find(e.end)){
@@ -103,7 +103,6 @@ vector<int> dfs(ALGraph& g){
     int root = 0;
     stack<int> list;
     vector<bool> visited(g.getNodeCount(), false);
-    vector<int> pred(g.getNodeCount(), 0);
     vector<int> order(g.getNodeCount(), 0);
 
     list.push(root);
@@ -112,42 +111,31 @@ vector<int> dfs(ALGraph& g){
 
     while (!list.empty()){
         int u = list.top();
-        int w = -1;
-        for (int i = 0; i < g.getEdges(u).size(); ++i){
-            if (!visited[g.getEdge(u,i).vertex]){
-                w = g.getEdge(u,i).vertex;
-                pred[w] = u;
+        bool found = false;
+        for (Node n : g.getEdges(u)){
+            if (!visited[n.vertex]){
                 ++next;
-                order[w] = next;
-                list.push(w);
-                visited[w]=true;
+                order[n.vertex] = next;
+                list.push(n.vertex);
+                visited[n.vertex]=true;
+                found = true;
                 break;
             }
         }
-        if (w == -1){
+        if (!found){
             list.pop();
         }
     }
     return order;
 }
 
-
 ALGraph heurisitcAgm(ALGraph& g){
     ALGraph temp_graph = kruskalMST(g);
     vector<int> order = dfs(temp_graph);
     ALGraph ham(g.getNodeCount());
     for (int i = 0; i < order.size()-1; ++i){
-        for (Node e : g.getEdges(order[i])){
-            if (e.vertex == order[i+1]){
-                ham.addEdge(i, e.vertex, e.weight);
-                break;
-            }
-        }
-    }
-    for (Edge e : g.getIncidenceList()){
-        if (e.start == 0 && e.end == order[order.size()-1]){
-            ham.addEdge(e.start, e.end, e.weight);
-            break;
+        for (Node n : g.getEdges(i)){
+//        Usar addSimpleEdge
         }
     }
     return ham;

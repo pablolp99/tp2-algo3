@@ -8,6 +8,7 @@
 int main() {
     ALGraph g = readALGraph();
     heurisitcAgm(g);
+//    heurisitcAgm(g);
     return 0;
 }
 

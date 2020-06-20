@@ -34,20 +34,22 @@ public:
     int getNodeCount();
 
     void addEdge(Vertex u, Vertex v, Weight w);
+    void addSimpleEdge(Vertex u, Vertex v, Weight w);
     Node getEdge(Vertex u, Vertex v);
     vector<Node> getEdges(Vertex u);
 
     vector<Edge> getIncidenceList();
 
-    void sortGraph();
+    void sortAL();
 private:
     int nodeCount;
     vector<vector<Node>> neighbours;
     vector<Edge> incidenceList;
 
-    void _sort();
+    void _sortAL();
 };
 
+bool sortbyvtx(const Node& a, const Node& b);
 bool sortbythr(const Edge& a, const Edge& b);
 
 #endif //CODE_GRAPHS_H
