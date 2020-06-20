@@ -39,10 +39,13 @@ public:
 
     vector<Edge> getIncidenceList();
 
+    void sortGraph();
 private:
     int nodeCount;
     vector<vector<Node>> neighbours;
     vector<Edge> incidenceList;
+
+    void _sort();
 };
 
 bool sortbythr(const Edge& a, const Edge& b);

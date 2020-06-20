@@ -4,23 +4,6 @@
 #include "unionfind.hpp"
 #include <bits/stdc++.h>
 
-bool sortbythr(const Edge& a, const Edge& b){
-    return (a.weight < b.weight);
-}
-
-//Graph readGraph(){
-//    int n, m;
-//    cin >> n >> m;
-//    vector<tuple<Vertex, Vertex, Weight>> edges;
-//    for (int i = 0; i < m; ++i){
-//        Vertex a,b;
-//        Weight w;
-//        cin >> a >> b >> w;
-//        edges.push_back(make_tuple(a-1,b-1,w));
-//    };
-//    return Graph(edges, n);
-//}
-
 ALGraph readALGraph(){
     int n, m;
     cin >> n >> m;
@@ -87,8 +70,7 @@ vector<Edge> shortestEdge(ALGraph& g){
     vector<Edge> sol;
     vector<Degree> deg(g.getNodeCount(), 0);
     UnionFind uf = UnionFind(g.getNodeCount());
-    vector<Edge> il = g.getIncidenceList();
-    sort(il.begin(), il.end(), sortbythr);
+    g.sortGraph();
     for (Edge e : g.getIncidenceList()){
         if (uf.find(e.start) != uf.find(e.end)){
             if (deg[e.start] <= 1 && deg[e.end] <= 1){
@@ -105,7 +87,7 @@ vector<Edge> shortestEdge(ALGraph& g){
 
 ALGraph kruskalMST(ALGraph g){
     UnionFind uf(g.getIncidenceList().size());
-    sort(g.getIncidenceList().begin(), g.getIncidenceList().end(), sortbythr);
+    g.sortGraph();
     ALGraph sol(g.getNodeCount());
     for (Edge e : g.getIncidenceList()){
         if (uf.find(e.start) != uf.find(e.end)){
@@ -152,5 +134,6 @@ vector<int> dfs(ALGraph& g){
 
 void heurisitcAgm(ALGraph& g){
     ALGraph gp = kruskalMST(g);
+    dfs(gp);
     int k;
 }

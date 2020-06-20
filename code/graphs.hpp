@@ -29,3 +29,15 @@ vector<Node> ALGraph::getEdges(Vertex u) {
 vector<Edge> ALGraph::getIncidenceList() {
     return incidenceList;
 }
+
+void ALGraph::sortGraph() {
+    _sort();
+}
+
+void ALGraph::_sort() {
+    sort(incidenceList.begin(), incidenceList.end(), sortbythr);
+}
+
+bool sortbythr(const Edge& a, const Edge& b){
+    return (a.weight < b.weight);
+}
