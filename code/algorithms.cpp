@@ -4,22 +4,22 @@
 #include "unionfind.hpp"
 #include <bits/stdc++.h>
 
-bool sortbythr(const tuple<int, int, int>& a, const tuple<int, int, int>& b){
-    return (get<2>(a) < get<2>(b));
+bool sortbythr(const Edge& a, const Edge& b){
+    return (a.weight < b.weight);
 }
 
-Graph readGraph(){
-    int n, m;
-    cin >> n >> m;
-    vector<tuple<Vertex, Vertex, Weight>> edges;
-    for (int i = 0; i < m; ++i){
-        Vertex a,b;
-        Weight w;
-        cin >> a >> b >> w;
-        edges.push_back(make_tuple(a-1,b-1,w));
-    };
-    return Graph(edges, n);
-}
+//Graph readGraph(){
+//    int n, m;
+//    cin >> n >> m;
+//    vector<tuple<Vertex, Vertex, Weight>> edges;
+//    for (int i = 0; i < m; ++i){
+//        Vertex a,b;
+//        Weight w;
+//        cin >> a >> b >> w;
+//        edges.push_back(make_tuple(a-1,b-1,w));
+//    };
+//    return Graph(edges, n);
+//}
 
 ALGraph readALGraph(){
     int n, m;
@@ -62,7 +62,7 @@ vector<int> nearestNeighbour(ALGraph& g){
     return nodes;
 }
 
-void closeCircuit(Graph g, vector<Edge>& sol, vector<Degree> deg){
+void closeCircuit(ALGraph g, vector<Edge>& sol, vector<Degree> deg){
     int a,b = 0;
     bool find_a = false;
     for (int i = 0; i < deg.size(); ++i){
@@ -75,26 +75,27 @@ void closeCircuit(Graph g, vector<Edge>& sol, vector<Degree> deg){
             }
         }
     }
-    for (Edge e : g.edges){
-        if ((get<0>(e) == b && get<1>(e) == a) || (get<1>(e) == b && get<0>(e) == a)){
+    for (Edge e : g.getIncidenceList()){
+        if ((e.start == b && e.end == a) || (e.end == b && e.start == a)){
             sol.push_back(e);
             break;
         }
     }
 }
 
-vector<Edge> shortestEdge(Graph& g){
+vector<Edge> shortestEdge(ALGraph& g){
     vector<Edge> sol;
-    vector<Degree> deg(g.nodeCount, 0);
-    UnionFind uf = UnionFind(g.nodeCount);
-    sort(g.edges.begin(), g.edges.end(), sortbythr);
-    for (Edge e : g.edges){
-        if (uf.find(get<0>(e)) != uf.find(get<1>(e))){
-            if (deg[get<0>(e)] <= 1 && deg[get<1>(e)] <= 1){
+    vector<Degree> deg(g.getNodeCount(), 0);
+    UnionFind uf = UnionFind(g.getNodeCount());
+    vector<Edge> il = g.getIncidenceList();
+    sort(il.begin(), il.end(), sortbythr);
+    for (Edge e : g.getIncidenceList()){
+        if (uf.find(e.start) != uf.find(e.end)){
+            if (deg[e.start] <= 1 && deg[e.end] <= 1){
                 sol.push_back(e);
-                ++deg[get<0>(e)];
-                ++deg[get<1>(e)];
-                uf.unionTree(get<0>(e), get<1>(e));
+                ++deg[e.start];
+                ++deg[e.end];
+                uf.unionTree(e.start, e.end);
             }
         }
     }
@@ -102,14 +103,14 @@ vector<Edge> shortestEdge(Graph& g){
     return sol;
 }
 
-ALGraph kruskalMST(Graph g){
-    UnionFind uf(g.edges.size());
-    sort(g.edges.begin(), g.edges.end(), sortbythr);
-    ALGraph sol(g.nodeCount);
-    for (Edge e : g.edges){
-        if (uf.find(get<0>(e)) != uf.find(get<1>(e))){
-            sol.addEdge(get<0>(e), get<1>(e), get<2>(e));
-            uf.unionTree(get<0>(e), get<1>(e));
+ALGraph kruskalMST(ALGraph g){
+    UnionFind uf(g.getIncidenceList().size());
+    sort(g.getIncidenceList().begin(), g.getIncidenceList().end(), sortbythr);
+    ALGraph sol(g.getNodeCount());
+    for (Edge e : g.getIncidenceList()){
+        if (uf.find(e.start) != uf.find(e.end)){
+            sol.addEdge(e.start, e.end, e.weight);
+            uf.unionTree(e.start, e.end);
         }
     }
     return sol;
@@ -149,7 +150,7 @@ vector<int> dfs(ALGraph& g){
 }
 
 
-void heurisitcAgm(Graph& g){
+void heurisitcAgm(ALGraph& g){
     ALGraph gp = kruskalMST(g);
     int k;
 }

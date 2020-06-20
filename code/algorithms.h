@@ -8,18 +8,17 @@
 #include "graphs.h"
 #include <vector>
 
-Graph readGraph();
 ALGraph readALGraph();
 
-void closeCircuit(Graph g, vector<Edge>& sol, vector<Degree> deg);
-vector<Edge> shortestEdge(Graph& g);
+void closeCircuit(ALGraph g, vector<Edge>& sol, vector<Degree> deg);
+vector<Edge> shortestEdge(ALGraph& g);
 
 Node minimumEdge();
 vector<int> nearestNeighbour(ALGraph& g);
 
-ALGraph kruskalMST(Graph g);
+ALGraph kruskalMST(ALGraph g);
 vector<int> dfs(ALGraph& g);
-//void heurisitcAgm(Graph& g);
+void heurisitcAgm(ALGraph& g);
 
 
 #endif //CODE_ALGORITHMS_H
