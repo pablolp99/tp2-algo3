@@ -115,38 +115,38 @@ ALGraph kruskalMST(Graph g){
     return sol;
 }
 
-//vector<int> dfs(ALGraph& g){
-//    int next = 1;
-//    int root = 0;
-//    stack<int> list;
-//    vector<bool> visited(g.size(), false);
-//    vector<int> pred(g.size(), 0);
-//    vector<int> order(g.size(), 0);
-//
-//    list.push(root);
-//    visited[root] = true;
-//    order[root] = next;
-//
-//    while (!list.empty()){
-//        int u = list.top();
-//        int w = -1;
-//        for (int i = 0; i < g[u].size(); ++i){
-//            if (!visited[g[u][i].first]){
-//                w = g[u][i].first;
-//                pred[w] = u;
-//                ++next;
-//                order[w] = next;
-//                list.push(w);
-//                visited[w]=true;
-//                break;
-//            }
-//        }
-//        if (w == -1){
-//            list.pop();
-//        }
-//    }
-//    return order;
-//}
+vector<int> dfs(ALGraph& g){
+    int next = 0;
+    int root = 0;
+    stack<int> list;
+    vector<bool> visited(g.getNodeCount(), false);
+    vector<int> pred(g.getNodeCount(), 0);
+    vector<int> order(g.getNodeCount(), 0);
+
+    list.push(root);
+    visited[root] = true;
+    order[root] = next;
+
+    while (!list.empty()){
+        int u = list.top();
+        int w = -1;
+        for (int i = 0; i < g.getEdges(u).size(); ++i){
+            if (!visited[g.getEdge(u,i).vertex]){
+                w = g.getEdge(u,i).vertex;
+                pred[w] = u;
+                ++next;
+                order[w] = next;
+                list.push(w);
+                visited[w]=true;
+                break;
+            }
+        }
+        if (w == -1){
+            list.pop();
+        }
+    }
+    return order;
+}
 
 void heurisitcAgm(Graph& g){
     ALGraph gp = kruskalMST(g);
