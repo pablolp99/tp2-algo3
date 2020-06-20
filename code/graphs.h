@@ -24,17 +24,24 @@ struct Graph{
         : edges(es), nodeCount(ds) {}
 };
 
-Graph readGraph();
-vector<Edge> shortestEdge(Graph& g);
+struct Node{
+    Node(Vertex _v, Weight _w) : vertex(_v), weight(_w) {}
+    Vertex vertex;
+    Weight weight;
+};
 
-typedef vector<vector<pair<Vertex, Weight> >> ALGraph;
+class ALGraph{
+public:
+    ALGraph(int n);
 
-ALGraph readALGraph();
-pair<Vertex, Weight> minimumEdge();
-vector<int> nearestNeighbour(ALGraph& g);
+    void addEdge(Vertex u, Vertex v, Weight w);
+    Node getEdge(Vertex u, Vertex v);
+    vector<Node> getEdges(Vertex u);
+    int getNodeCount();
 
-ALGraph primMST(ALGraph& g);
-pair<vector<int>, vector<int>> dfs(ALGraph& g);
-void heurisitcAgm(ALGraph g);
+private:
+    int nodeCount;
+    vector<vector<Node>> neighbours;
+};
 
 #endif //CODE_GRAPHS_H

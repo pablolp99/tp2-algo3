@@ -17,7 +17,8 @@ int UnionFind::find(int n){
 }
 
 void UnionFind::unionTree(int a, int b){
-    a, b = find(a), find(b);
+    a = find(a);
+    b = find(b);
     if (height[a] < height[b]){
         father[a] = b;
     } else {
