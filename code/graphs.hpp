@@ -12,8 +12,7 @@ bool sortByWeight(const Edge &a, const Edge &b){
 
 ALGraph::ALGraph(int n){
     nodeCount = n;
-    vector<vector<Node>> _v(n);
-    neighbours = _v;
+    neighbours = vector<vector<Node>>(n);
 }
 
 int ALGraph::getNodeCount() {
