@@ -35,6 +35,9 @@
 code/cmake-build-debug/
 code/CMakeLists.txt
 code/.idea/
+.idea/
+cmake-build-debug/
+CMakeLists.txt
 
 # Other Shit
 code/other_shit.txt
