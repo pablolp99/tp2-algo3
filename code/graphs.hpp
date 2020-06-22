@@ -2,11 +2,11 @@
 
 using namespace std;
 
-bool sortbyvtx(const Node& a, const Node& b){
+bool sortByVertex(const Node &a, const Node &b){
     return (a.vertex < b.vertex);
 }
 
-bool sortbythr(const Edge& a, const Edge& b){
+bool sortByWeight(const Edge &a, const Edge &b){
     return (a.weight < b.weight);
 }
 
@@ -24,8 +24,8 @@ void ALGraph::addEdge(Vertex u, Vertex v, Weight w) {
     neighbours[u].push_back(Node(v, w));
     neighbours[v].push_back(Node(u, w));
     incidenceList.push_back(Edge(u, v, w));
-    sort(neighbours[u].begin(), neighbours[u].end(), sortbyvtx);
-    sort(neighbours[v].begin(), neighbours[v].end(), sortbyvtx);
+    sort(neighbours[u].begin(), neighbours[u].end(), sortByVertex);
+    sort(neighbours[v].begin(), neighbours[v].end(), sortByVertex);
 }
 
 void ALGraph::addSimpleEdge(Vertex u, Vertex v, Weight w) {
@@ -52,5 +52,5 @@ void ALGraph::sortAL() {
 }
 
 void ALGraph::_sortAL() {
-    sort(incidenceList.begin(), incidenceList.end(), sortbythr);
+    sort(incidenceList.begin(), incidenceList.end(), sortByWeight);
 }

@@ -49,7 +49,7 @@ private:
     void _sortAL();
 };
 
-bool sortbyvtx(const Node& a, const Node& b);
-bool sortbythr(const Edge& a, const Edge& b);
+bool sortByVertex(const Node &a, const Node &b);
+bool sortByWeight(const Edge &a, const Edge &b);
 
 #endif //CODE_GRAPHS_H
