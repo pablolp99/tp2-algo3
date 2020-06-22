@@ -5,38 +5,38 @@
 #include <stack>
 
 
-ALGraph readALGraph(){
+ALGraph readALGraph() {
     int n, m;
     cin >> n >> m;
     ALGraph g(n);
-    for (int i = 0; i < m; ++i){
-        Vertex u,v;
+    for (int i = 0; i < m; ++i) {
+        Vertex u, v;
         Weight w;
         cin >> u >> v >> w;
-        g.addEdge(u-1, v-1, w);
+        g.addEdge(u - 1, v - 1, w);
     }
     return g;
 }
 
-Node minimumEdge(ALGraph& g, int& v, vector<bool>& flag){
+Node minimumEdge(ALGraph &g, int &v, vector<bool> &flag) {
     Node w = g.getEdge(v, 0);
     w.weight = INFINITY;
-    for (int i = 0; i < g.getEdges(v).size(); ++i){
+    for (int i = 0; i < g.getEdges(v).size(); ++i) {
         Node temp = g.getEdge(v, i);
-        if (!flag[temp.vertex] && (temp.weight < w.weight)){
+        if (!flag[temp.vertex] && (temp.weight < w.weight)) {
             w = temp;
         }
     }
     return w;
 }
 
-vector<int> nearestNeighbour(ALGraph& g){
+vector<int> nearestNeighbour(ALGraph &g) {
     int v = 0;
     vector<int> nodes = {v};
     int nodeCount = g.getNodeCount();
     vector<bool> flag(nodeCount);
     flag[v] = true;
-    while (nodes.size() < nodeCount){
+    while (nodes.size() < nodeCount) {
         Node w = minimumEdge(g, v, flag);
         nodes.push_back(w.vertex);
         flag[w.vertex] = true;
@@ -46,12 +46,12 @@ vector<int> nearestNeighbour(ALGraph& g){
     return nodes;
 }
 
-void closeCircuit(ALGraph g, vector<Edge>& sol, vector<Degree> deg){
-    int a,b = 0;
+void closeCircuit(ALGraph g, vector<Edge> &sol, vector<Degree> deg) {
+    int a, b = 0;
     bool find_a = false;
-    for (int i = 0; i < deg.size(); ++i){
-        if (deg[i] == 1){
-            if (!find_a){
+    for (int i = 0; i < deg.size(); ++i) {
+        if (deg[i] == 1) {
+            if (!find_a) {
                 a = i;
                 find_a = true;
             } else {
@@ -59,22 +59,22 @@ void closeCircuit(ALGraph g, vector<Edge>& sol, vector<Degree> deg){
             }
         }
     }
-    for (Edge e : g.getIncidenceList()){
-        if ((e.start == b && e.end == a) || (e.end == b && e.start == a)){
+    for (Edge e : g.getIncidenceList()) {
+        if ((e.start == b && e.end == a) || (e.end == b && e.start == a)) {
             sol.push_back(e);
             break;
         }
     }
 }
 
-vector<Edge> shortestEdge(ALGraph& g){
+vector<Edge> shortestEdge(ALGraph &g) {
     vector<Edge> sol;
     vector<Degree> deg(g.getNodeCount(), 0);
     UnionFind uf = UnionFind(g.getNodeCount());
     g.sortAL();
-    for (Edge e : g.getIncidenceList()){
-        if (uf.find(e.start) != uf.find(e.end)){
-            if (deg[e.start] <= 1 && deg[e.end] <= 1){
+    for (Edge e : g.getIncidenceList()) {
+        if (uf.find(e.start) != uf.find(e.end)) {
+            if (deg[e.start] <= 1 && deg[e.end] <= 1) {
                 sol.push_back(e);
                 ++deg[e.start];
                 ++deg[e.end];
@@ -86,12 +86,12 @@ vector<Edge> shortestEdge(ALGraph& g){
     return sol;
 }
 
-ALGraph kruskalMST(ALGraph g){
+ALGraph kruskalMST(ALGraph g) {
     UnionFind uf(g.getIncidenceList().size());
     g.sortAL();
     ALGraph sol(g.getNodeCount());
-    for (Edge e : g.getIncidenceList()){
-        if (uf.find(e.start) != uf.find(e.end)){
+    for (Edge e : g.getIncidenceList()) {
+        if (uf.find(e.start) != uf.find(e.end)) {
             sol.addEdge(e.start, e.end, e.weight);
             uf.unionTree(e.start, e.end);
         }
@@ -99,7 +99,7 @@ ALGraph kruskalMST(ALGraph g){
     return sol;
 }
 
-vector<int> DFS(ALGraph &g){
+vector<int> DFS(ALGraph &g) {
     int next = 0;
     int root = 0;
     stack<int> list;
@@ -130,18 +130,18 @@ vector<int> DFS(ALGraph &g){
     return order;
 }
 
-pair<vector<int>, int> heuristicAGM(ALGraph &g){
+pair<vector<int>, int> heuristicAGM(ALGraph &g) {
     ALGraph temp_graph = kruskalMST(g);
     vector<int> order = DFS(temp_graph);
     order.push_back(0);
     int total_weight = 0;
-    for (int i = 0; i < order.size()-1; ++i){
-        for (Node n : g.getEdges(order[i])){
-            if (n.vertex == order[i+1]){
+    for (int i = 0; i < order.size() - 1; ++i) {
+        for (Node n : g.getEdges(order[i])) {
+            if (n.vertex == order[i + 1]) {
                 total_weight += n.weight;
                 break;
             }
         }
     }
-    return make_pair(order,total_weight);
+    return make_pair(order, total_weight);
 }

@@ -2,15 +2,15 @@
 
 using namespace std;
 
-bool sortByVertex(const Node &a, const Node &b){
+bool sortByVertex(const Node &a, const Node &b) {
     return (a.vertex < b.vertex);
 }
 
-bool sortByWeight(const Edge &a, const Edge &b){
+bool sortByWeight(const Edge &a, const Edge &b) {
     return (a.weight < b.weight);
 }
 
-ALGraph::ALGraph(int n){
+ALGraph::ALGraph(int n) {
     nodeCount = n;
     neighbours = vector<vector<Node>>(n);
 }
