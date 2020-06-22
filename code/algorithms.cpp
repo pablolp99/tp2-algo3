@@ -2,7 +2,8 @@
 #include <iostream>
 #include "graphs.hpp"
 #include "unionfind.hpp"
-#include <bits/stdc++.h>
+#include <stack>
+
 
 ALGraph readALGraph(){
     int n, m;
@@ -98,7 +99,7 @@ ALGraph kruskalMST(ALGraph g){
     return sol;
 }
 
-vector<int> dfs(ALGraph& g){
+vector<int> DFS(ALGraph &g){
     int next = 0;
     int root = 0;
     stack<int> list;
@@ -129,9 +130,9 @@ vector<int> dfs(ALGraph& g){
     return order;
 }
 
-pair<vector<int>, int> heurisitcAgm(ALGraph& g){
+pair<vector<int>, int> heuristicAGM(ALGraph &g){
     ALGraph temp_graph = kruskalMST(g);
-    vector<int> order = dfs(temp_graph);
+    vector<int> order = DFS(temp_graph);
     order.push_back(0);
     int total_weight = 0;
     for (int i = 0; i < order.size()-1; ++i){
