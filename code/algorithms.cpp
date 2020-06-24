@@ -3,6 +3,7 @@
 #include "graphs.hpp"
 #include "unionfind.hpp"
 #include <stack>
+#include <cmath>
 
 
 ALGraph readALGraph() {
