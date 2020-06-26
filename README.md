@@ -16,6 +16,7 @@ TP 2 Algoritmos y Estructuras de Datos 3
 
 ## Criterios
 
+### Subvecindad
 - Random
 - 2OPT con artista mas larga fija
 
