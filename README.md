@@ -18,7 +18,7 @@ TP 2 Algoritmos y Estructuras de Datos 3
 
 ### Subvecindad
 - Random
-- 2OPT con artista mas larga fija
+- 2OPT con artista mas pesada fija
 
 ## Todo
 - Cambiar la implementacion de ALGraph para que use `vector<unordered_map<int>>` en los neighbours
