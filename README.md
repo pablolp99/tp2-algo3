@@ -13,3 +13,8 @@ TP 2 Algoritmos y Estructuras de Datos 3
 - Tabu (not sex)
     - Memoria basada en ultimas sol opt
     - Memoria basada en Estr
+
+## Criterios
+
+- Random
+- 2OPT con artista mas larga fija
