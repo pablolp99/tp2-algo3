@@ -18,3 +18,6 @@ TP 2 Algoritmos y Estructuras de Datos 3
 
 - Random
 - 2OPT con artista mas larga fija
+
+## Todo
+- Cambiar la implementacion de ALGraph para que use `vector<unordered_map<int>>` en los neighbours
