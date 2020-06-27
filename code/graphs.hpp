@@ -9,6 +9,7 @@ bool sortByWeight(const Edge &a, const Edge &b) {
 ALGraph::ALGraph(int n) {
     nodeCount = n;
     neighbours = vector<unordered_map<Vertex, Weight>>(n);
+    totalWeight = 0;
 }
 
 int ALGraph::getNodeCount() {
@@ -16,11 +17,10 @@ int ALGraph::getNodeCount() {
 }
 
 void ALGraph::addEdge(Vertex u, Vertex v, Weight w) {
-//    neighbours[u].push_back(Node(v, w));
-//    neighbours[v].push_back(Node(u, w));
     neighbours[u][v] = w;
     neighbours[v][u] = w;
     incidenceList.push_back(Edge(u, v, w));
+    totalWeight += w;
 }
 
 int ALGraph::getNeighbour(Vertex u, Vertex v) {

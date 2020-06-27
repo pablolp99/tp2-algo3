@@ -51,6 +51,7 @@ private:
 //    vector<vector<Node>> neighbours;
     vector<unordered_map<Vertex, Weight>> neighbours;
     vector<Edge> incidenceList;
+    int totalWeight;
 
     void _sortAL();
 };

@@ -21,58 +21,41 @@ ALGraph readALGraph() {
     return g;
 }
 
-int minimumEdge(ALGraph &g, int &v, vector<bool> &flag) {
+vector<int> minimumEdge(ALGraph &g, int &v, vector<bool> &flag){
     int w = INFINITY;
-    int res = 0;
-    for (int i = 0; i < g.getNeighbours(v).size(); ++i) {
-        int temp = g.getNeighbour(v, i);
-        if (!flag[i] && (temp < w)) {
-            v = i;
-            w = temp;
+    vector<int> pair(2);
+    for (auto e : g.getNeighbours(v)){
+        if (!flag[e.first] && (e.second < w)){
+            w = e.second;
+            pair = { e.first, e.second };
         }
     }
-
-    return res;
+    return pair;
 }
 
-vector<int> nearestNeighbour(ALGraph &g) {
-    int nodeCount = g.getNodeCount();
+ALGraph nearestNeighbour(ALGraph &g){
     int v = 0;
-    vector<int> nodes = {v};
-    vector<bool> flag(nodeCount);
+    int idx = 0;
+    vector<int> w;
+    ALGraph solution(g.getNodeCount());
+    vector<bool> flag(g.getNodeCount(), false);
     flag[v] = true;
 
-    while (nodes.size() < nodeCount) {
-        int w = minimumEdge(g, v, flag);
-        nodes.push_back(w);
-        flag[w] = true;
-        v = w;
+    while (idx < g.getNodeCount()-1){
+        w = minimumEdge(g, v, flag);
+        flag[w[0]] = true;
+        solution.addEdge(v, w[0], w[1]);
+        v = w[0];
+        ++idx;
     }
-    nodes.push_back(0);
-    return nodes;
+
+    solution.addEdge(0, v, g.getNeighbour(0, v));
+
+    return solution;
 }
 
-void closeCircuit(ALGraph g, vector<Edge> &sol, vector<Degree> deg) {
-    int a, b = 0;
-
-    for (int i = 0; i < deg.size(); ++i) {
-        if (deg[i] != 1) {
-            continue;
-        }
-        //Then deg[i] == 1
-        a = i;
-    }
-
-    for (Edge e : g.getIncidenceList()) {
-        if ((e.start == b && e.end == a) || (e.end == b && e.start == a)) {
-            sol.push_back(e);
-            break;
-        }
-    }
-}
-
-vector<Edge> shortestEdge(ALGraph &g) {
-    vector<Edge> sol;
+ALGraph shortestEdge(ALGraph &g) {
+    ALGraph sol(g.getNodeCount());
     vector<Degree> deg(g.getNodeCount(), 0);
     UnionFind uf = UnionFind(g.getNodeCount());
     g.sortAL();
@@ -81,14 +64,26 @@ vector<Edge> shortestEdge(ALGraph &g) {
         bool fromDiffGroups = uf.find(e.start) != uf.find(e.end);
         bool nodesNotSaturated = deg[e.start] <= 1 && deg[e.end] <= 1;
         if (fromDiffGroups && nodesNotSaturated) {
-            sol.push_back(e);
+            sol.addEdge(e.start, e.end, e.weight);
             ++deg[e.start];
             ++deg[e.end];
             uf.unionTree(e.start, e.end);
         }
     }
 
-    closeCircuit(g, sol, deg);
+    int f = -1;
+    int s = -1;
+    for (int i = 0; i < deg.size(); ++i){
+        if (deg[i] == 1){
+            if (f == -1){
+                f = i;
+            } else {
+                s = i;
+            }
+        }
+    }
+
+    sol.addEdge(f, s, g.getNeighbour(f, s));
 
     return sol;
 }
@@ -153,4 +148,8 @@ pair<vector<int>, int> heuristicAGM(ALGraph &g) {
     order.pop_back();
 
     return make_pair(order, total_weight);
+}
+
+void tabuSearch(ALGraph &g, int memSize){
+
 }
