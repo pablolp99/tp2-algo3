@@ -10,19 +10,23 @@
 
 ALGraph readALGraph();
 
-void closeCircuit(ALGraph g, vector<Edge> &sol, vector<Degree> deg);
-
-vector<Edge> shortestEdge(ALGraph &g);
-
 Node minimumEdge();
 
+//vector<int> nearestNeighbour(ALGraph &g);
 vector<int> nearestNeighbour(ALGraph &g);
+
+//ALGraph shortestEdge(ALGraph &g);
+vector<Edge> shortestEdge(ALGraph &g);
 
 ALGraph kruskalMST(ALGraph g);
 
 vector<int> DFS(ALGraph &g);
 
-pair<vector<int>, int> heuristicAGM(ALGraph &g);
+//pair<vector<int>, int> heuristicAGM(ALGraph &g);
+vector<int> heuristicAGM(ALGraph &g);
 
+ALGraph localSearch(ALGraph &g);
+
+ALGraph tabuSearch(int h);
 
 #endif //CODE_ALGORITHMS_H

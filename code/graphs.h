@@ -37,11 +37,9 @@ public:
 
     void addEdge(Vertex u, Vertex v, Weight w);
 
-    void addSimpleEdge(Vertex u, Vertex v, Weight w);
-
     Node getEdge(Vertex u, Vertex v);
 
-    vector<Node> getEdges(Vertex u);
+    vector<Node> getNeighboursFrom(Vertex u);
 
     vector<Edge> getIncidenceList();
 
@@ -51,6 +49,7 @@ private:
     int nodeCount;
     vector<vector<Node>> neighbours;
     vector<Edge> incidenceList;
+    int totalWeight;
 
     void _sortAL();
 };
