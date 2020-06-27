@@ -7,8 +7,8 @@
 
 int main() {
     ALGraph g = readALGraph();
-    pair<vector<int>, int> res = heuristicAGM(g);
-
+//    shortestEdge(g);
+    heuristicAGM(g);
 //    heuristicAGM(g);
     return 0;
 }

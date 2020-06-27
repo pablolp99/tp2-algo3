@@ -2,17 +2,13 @@
 
 using namespace std;
 
-bool sortByVertex(const Node &a, const Node &b) {
-    return (a.vertex < b.vertex);
-}
-
 bool sortByWeight(const Edge &a, const Edge &b) {
     return (a.weight < b.weight);
 }
 
 ALGraph::ALGraph(int n) {
     nodeCount = n;
-    neighbours = vector<vector<Node>>(n);
+    neighbours = vector<unordered_map<Vertex, Weight>>(n);
     totalWeight = 0;
 }
 
@@ -21,17 +17,17 @@ int ALGraph::getNodeCount() {
 }
 
 void ALGraph::addEdge(Vertex u, Vertex v, Weight w) {
-    neighbours[u].push_back(Node(v, w));
-    neighbours[v].push_back(Node(u, w));
+    neighbours[u][v] = w;
+    neighbours[v][u] = w;
     incidenceList.push_back(Edge(u, v, w));
     totalWeight += w;
 }
 
-Node ALGraph::getEdge(Vertex u, Vertex v) {
+int ALGraph::getNeighbour(Vertex u, Vertex v) {
     return neighbours[u][v];
 }
 
-vector<Node> ALGraph::getNeighboursFrom(Vertex u) {
+unordered_map<Vertex, Weight> ALGraph::getNeighbours(Vertex u) {
     return neighbours[u];
 }
 

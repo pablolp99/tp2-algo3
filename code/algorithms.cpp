@@ -21,41 +21,41 @@ ALGraph readALGraph() {
     return g;
 }
 
-Node minimumEdge(ALGraph &g, int &v, vector<bool> &flag) {
-    Node w = g.getEdge(v, 0);
-    w.weight = INFINITY;
-
-    for (int i = 0; i < g.getNeighboursFrom(v).size(); ++i) {
-        Node temp = g.getEdge(v, i);
-        if (!flag[temp.vertex] && (temp.weight < w.weight)) {
-            w = temp;
+vector<int> minimumEdge(ALGraph &g, int &v, vector<bool> &flag){
+    int w = INFINITY;
+    vector<int> pair(2);
+    for (auto e : g.getNeighbours(v)){
+        if (!flag[e.first] && (e.second < w)){
+            w = e.second;
+            pair = { e.first, e.second };
         }
     }
-
-    return w;
+    return pair;
 }
 
-vector<int> nearestNeighbour(ALGraph &g) {
-    int nodeCount = g.getNodeCount();
+ALGraph nearestNeighbour(ALGraph &g){
     int v = 0;
-    int totalWeight = 0;
-    vector<int> nodes = {v};
-    vector<bool> flag(nodeCount);
+    int idx = 0;
+    vector<int> w;
+    ALGraph solution(g.getNodeCount());
+    vector<bool> flag(g.getNodeCount(), false);
     flag[v] = true;
 
-    while (nodes.size() < nodeCount) {
-        Node w = minimumEdge(g, v, flag);
-        nodes.push_back(w.vertex);
-        flag[w.vertex] = true;
-        v = w.vertex;
-        totalWeight+=w.weight;
+    while (idx < g.getNodeCount()-1){
+        w = minimumEdge(g, v, flag);
+        flag[w[0]] = true;
+        solution.addEdge(v, w[0], w[1]);
+        v = w[0];
+        ++idx;
     }
-//    nodes.push_back(0);
-    return nodes;
+
+    solution.addEdge(0, v, g.getNeighbour(0, v));
+
+    return solution;
 }
 
-vector<Edge> shortestEdge(ALGraph &g) {
-    vector<Edge> sol;
+ALGraph shortestEdge(ALGraph &g) {
+    ALGraph sol(g.getNodeCount());
     vector<Degree> deg(g.getNodeCount(), 0);
     UnionFind uf = UnionFind(g.getNodeCount());
     g.sortAL();
@@ -64,14 +64,26 @@ vector<Edge> shortestEdge(ALGraph &g) {
         bool fromDiffGroups = uf.find(e.start) != uf.find(e.end);
         bool nodesNotSaturated = deg[e.start] <= 1 && deg[e.end] <= 1;
         if (fromDiffGroups && nodesNotSaturated) {
-            sol.push_back(e);
+            sol.addEdge(e.start, e.end, e.weight);
             ++deg[e.start];
             ++deg[e.end];
             uf.unionTree(e.start, e.end);
         }
     }
 
-//    closeCircuit(g, sol, deg);
+    int f = -1;
+    int s = -1;
+    for (int i = 0; i < deg.size(); ++i){
+        if (deg[i] == 1){
+            if (f == -1){
+                f = i;
+            } else {
+                s = i;
+            }
+        }
+    }
+
+    sol.addEdge(f, s, g.getNeighbour(f, s));
 
     return sol;
 }
@@ -86,14 +98,13 @@ ALGraph kruskalMST(ALGraph g) {
             uf.unionTree(e.start, e.end);
         }
     }
-
     return sol;
 }
 
 vector<int> DFS(ALGraph &g) {
     int next = 0;
-    int root = 1;
-    stack<Vertex> list;
+    int root = 0;
+    stack<int> list;
     vector<bool> visited(g.getNodeCount(), false);
     vector<int> order(g.getNodeCount(), 0);
 
@@ -102,14 +113,14 @@ vector<int> DFS(ALGraph &g) {
     order[root] = next;
 
     while (!list.empty()) {
-        Vertex u = list.top();
+        int u = list.top();
         bool found = false;
-        for (Node n : g.getNeighboursFrom(u)) {
-            if (!visited[n.vertex]) {
+        for (auto n : g.getNeighbours(u)) {
+            if (!visited[n.first]) {
                 ++next;
-                order[n.vertex] = next;
-                list.push(n.vertex);
-                visited[n.vertex] = true;
+                order[n.first] = next;
+                list.push(n.first);
+                visited[n.first] = true;
                 found = true;
                 break;
             }
@@ -118,51 +129,27 @@ vector<int> DFS(ALGraph &g) {
             list.pop();
         }
     }
-
     return order;
 }
 
-vector<int> heuristicAGM(ALGraph &g) {
+pair<vector<int>, int> heuristicAGM(ALGraph &g) {
     ALGraph temp_graph = kruskalMST(g);
     vector<int> order = DFS(temp_graph);
     order.push_back(0);
     int total_weight = 0;
     for (int i = 0; i < order.size() - 1; ++i) {
-        for (Node n : g.getNeighboursFrom(order[i])) {
-            if (n.vertex == order[i + 1]) {
-                total_weight += n.weight;
+        for (auto n : g.getNeighbours(order[i])) {
+            if (n.first == order[i + 1]) {
+                total_weight += n.second;
                 break;
             }
         }
     }
+    order.pop_back();
 
-    return order;
+    return make_pair(order, total_weight);
 }
 
-//ALGraph localSearch(ALGraph &g) {
-//    ALGraph cycle = shortestEdge(g);
-//
-//}
+void tabuSearch(ALGraph &g, int memSize){
 
-//ALGraph tabuSearch(ALGraph &g, int h, int t, int epochs) {
-//    switch (h){
-//        case 0 :
-//            break;
-//        case 1 : {
-//    ALGraph cycle = shortestEdge(g);
-//            break;
-//        }
-//        default :
-//            break;
-//    }
-//    ALGraph best_cycle = cycle;
-//    vector<int> memoria(t);
-//    for (int i = 0; i < epochs; ++i){
-//        vecinos = localSearch()
-//        ciclo = mejorCiclo()
-//        memoria.recordarCiclo()
-//        if (costo(ciclo) < costo(mejorCiclo)){
-//            mejorCiclo = ciclo;
-//        }
-//    }
-//}
+}
