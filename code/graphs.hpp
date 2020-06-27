@@ -23,6 +23,10 @@ void ALGraph::addEdge(Vertex u, Vertex v, Weight w) {
     totalWeight += w;
 }
 
+Edge ALGraph::getEdge(Vertex u, Vertex v) {
+    return Edge(u, v, this->getNeighbour(u, v));
+}
+
 int ALGraph::getNeighbour(Vertex u, Vertex v) {
     return neighbours[u][v];
 }
@@ -37,6 +41,19 @@ vector<Edge> ALGraph::getIncidenceList() {
 
 void ALGraph::sortAL() {
     _sortAL();
+}
+
+void ALGraph::swapEdge(ALGraph& g, Edge e, Edge k) {
+    _deleteEdge(e);
+    _deleteEdge(k);
+    this->addEdge(e.start, k.start, g.getNeighbour(e.start, k.start));
+    this->addEdge(k.end, e.end, g.getNeighbour(k.end, e.end));
+}
+
+void ALGraph::_deleteEdge(Edge e) {
+    neighbours[e.start].erase(e.end);
+    neighbours[e.end].erase(e.start);
+    totalWeight-=e.weight;
 }
 
 void ALGraph::_sortAL() {

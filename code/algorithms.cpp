@@ -129,27 +129,29 @@ vector<int> DFS(ALGraph &g) {
             list.pop();
         }
     }
+
     return order;
 }
 
-pair<vector<int>, int> heuristicAGM(ALGraph &g) {
+ALGraph heuristicAGM(ALGraph &g) {
     ALGraph temp_graph = kruskalMST(g);
     vector<int> order = DFS(temp_graph);
+    ALGraph solution(g.getNodeCount());
     order.push_back(0);
-    int total_weight = 0;
-    for (int i = 0; i < order.size() - 1; ++i) {
-        for (auto n : g.getNeighbours(order[i])) {
-            if (n.first == order[i + 1]) {
-                total_weight += n.second;
-                break;
-            }
-        }
+    for (int i = 0; i < order.size() - 1; ++i){
+        solution.addEdge(order[i], order[i+1], g.getNeighbour(order[i], order[i+1]));
     }
-    order.pop_back();
 
-    return make_pair(order, total_weight);
+    return solution;
 }
 
-void tabuSearch(ALGraph &g, int memSize){
 
+
+void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int terminationCond){
+    ALGraph cycle = heuristic(g);
+    ALGraph bestYet = cycle;
+//    Memory Based: Caracteristicas de las soluciones
+    vector<int> memory(memSize, UNDEFINED);
+    int iterations = 0;
+    cycle.swapEdge(g, g.getEdge(0, 1), g.getEdge(2, 3));
 }
