@@ -22,4 +22,5 @@ TP 2 Algoritmos y Estructuras de Datos 3
 - 2OPT con arista menos pesada fija
 
 ## Todo
-- Cambiar la implementacion de ALGraph para que use `vector<unordered_map<int>>` en los neighbours
+- <del>Cambiar la implementacion de ALGraph para que use `vector<unordered_map<int>>` en los neighbours</del>
+- Ya tenemos 10 mejores de subvecindad, falta elegir random
