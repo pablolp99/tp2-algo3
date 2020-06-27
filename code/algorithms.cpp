@@ -4,7 +4,7 @@
 #include "unionfind.hpp"
 #include <stack>
 #include <cmath>
-
+#include <set>
 
 ALGraph readALGraph() {
     int n, m;
@@ -139,19 +139,85 @@ ALGraph heuristicAGM(ALGraph &g) {
     ALGraph solution(g.getNodeCount());
     order.push_back(0);
     for (int i = 0; i < order.size() - 1; ++i){
-        solution.addEdge(order[i], order[i+1], g.getNeighbour(order[i], order[i+1]));
+        solution.addEdge(order[i], order[i+1], g.getNeighbour(order[i], order[i + 1]));
     }
 
     return solution;
 }
 
+vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
+//    Arista mas pesada
+    vector<ALGraph> vicinity;
+    vector<ALGraph> bestVicinity(10);
+    Edge heaviest(UNDEFINED, UNDEFINED, UNDEFINED);
+    for (int i = 0; i < cycle.getNodeCount(); ++i){
+        for (auto e : cycle.getNeighbours(i)){
+            if (e.second >= heaviest.weight){
+                heaviest = Edge(i, e.first, e.second);
+            }
+        }
+    }
 
+    for (int i = 0; i < g.getNodeCount(); ++i){
+        for (int j = 0; j < g.getNodeCount(); ++j){
+            if (i != heaviest.start && i != heaviest.end &&
+                j != heaviest.start && j != heaviest.end &&
+                i < j){
+                ALGraph temp = cycle;
+                temp.swapEdge(g, heaviest, g.getEdge(i, j));
+                vicinity.push_back(temp);
+            }
+        }
+    }
+
+    for (int cancer = 0; cancer < 10; ++cancer){
+        bestVicinity[cancer] = vicinity[cancer];
+    }
+
+    for (int l = 0; l < vicinity.size(); ++l){
+        bool is_min = false;
+        int temp_best = UNDEFINED;
+        for (int p = 0; p < bestVicinity.size(); ++p){
+            if (vicinity[l].getTotalWeight() < bestVicinity[p].getTotalWeight()){
+                is_min = true;
+                temp_best = l;
+            }
+        }
+        if (is_min){
+            int temp_worse = 0;
+            int temp_idx = 0;
+            for (int k = 0; k < bestVicinity.size(); ++k){
+                if (bestVicinity[k].getTotalWeight() > temp_worse){
+                    temp_idx = k;
+                    temp_worse = bestVicinity[k].getTotalWeight();
+                }
+            }
+            bestVicinity[temp_idx] = vicinity[temp_best];
+        }
+    }
+
+   return vicinity;
+}
+
+void findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory){
+    ALGraph bestCycle = vicinity[0];
+    for (int i = 1; i < vicinity.size(); ++i){
+        if (vicinity[i].getTotalWeight() < bestCycle.getTotalWeight()){
+            bestCycle = vicinity[i];
+        }
+    }
+}
 
 void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int terminationCond){
     ALGraph cycle = heuristic(g);
     ALGraph bestYet = cycle;
 //    Memory Based: Caracteristicas de las soluciones
     vector<int> memory(memSize, UNDEFINED);
+    memory[0] = bestYet.getTotalWeight();
     int iterations = 0;
-    cycle.swapEdge(g, g.getEdge(0, 1), g.getEdge(2, 3));
+//    while (iterations < terminationCond){
+    vector<ALGraph> subVicinity = getHeaviestEdgeSubVicinity(g, cycle);
+//        cycle =
+
+//    }
 }

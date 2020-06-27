@@ -25,6 +25,8 @@ struct Edge {
 
 class ALGraph {
 public:
+    ALGraph();
+
     ALGraph(int n);
 
     int getNodeCount();
@@ -42,6 +44,8 @@ public:
     void sortAL();
 
     void swapEdge(ALGraph& g, Edge, Edge);
+
+    int getTotalWeight();
 
 private:
     int nodeCount;

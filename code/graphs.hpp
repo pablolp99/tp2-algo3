@@ -6,6 +6,12 @@ bool sortByWeight(const Edge &a, const Edge &b) {
     return (a.weight < b.weight);
 }
 
+ALGraph::ALGraph() {
+    nodeCount = 0;
+    neighbours = vector<unordered_map<Vertex, Weight>>(0);
+    totalWeight = 0;
+}
+
 ALGraph::ALGraph(int n) {
     nodeCount = n;
     neighbours = vector<unordered_map<Vertex, Weight>>(n);
@@ -46,8 +52,8 @@ void ALGraph::sortAL() {
 void ALGraph::swapEdge(ALGraph& g, Edge e, Edge k) {
     _deleteEdge(e);
     _deleteEdge(k);
-    this->addEdge(e.start, k.start, g.getNeighbour(e.start, k.start));
-    this->addEdge(k.end, e.end, g.getNeighbour(k.end, e.end));
+    this->addEdge(e.start, k.end, g.getNeighbour(e.start, k.end));
+    this->addEdge(k.start, e.end, g.getNeighbour(k.start, e.end));
 }
 
 void ALGraph::_deleteEdge(Edge e) {
@@ -58,4 +64,8 @@ void ALGraph::_deleteEdge(Edge e) {
 
 void ALGraph::_sortAL() {
     sort(incidenceList.begin(), incidenceList.end(), sortByWeight);
+}
+
+int ALGraph::getTotalWeight(){
+    return totalWeight;
 }
