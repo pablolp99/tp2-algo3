@@ -14,7 +14,7 @@ void closeCircuit(ALGraph g, vector<Edge> &sol, vector<Degree> deg);
 
 vector<Edge> shortestEdge(ALGraph &g);
 
-Node minimumEdge();
+int minimumEdge();
 
 vector<int> nearestNeighbour(ALGraph &g);
 

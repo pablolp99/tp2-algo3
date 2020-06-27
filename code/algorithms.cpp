@@ -21,18 +21,18 @@ ALGraph readALGraph() {
     return g;
 }
 
-Node minimumEdge(ALGraph &g, int &v, vector<bool> &flag) {
-    Node w = g.getEdge(v, 0);
-    w.weight = INFINITY;
-
-    for (int i = 0; i < g.getEdges(v).size(); ++i) {
-        Node temp = g.getEdge(v, i);
-        if (!flag[temp.vertex] && (temp.weight < w.weight)) {
+int minimumEdge(ALGraph &g, int &v, vector<bool> &flag) {
+    int w = INFINITY;
+    int res = 0;
+    for (int i = 0; i < g.getNeighbours(v).size(); ++i) {
+        int temp = g.getNeighbour(v, i);
+        if (!flag[i] && (temp < w)) {
+            v = i;
             w = temp;
         }
     }
 
-    return w;
+    return res;
 }
 
 vector<int> nearestNeighbour(ALGraph &g) {
@@ -43,10 +43,10 @@ vector<int> nearestNeighbour(ALGraph &g) {
     flag[v] = true;
 
     while (nodes.size() < nodeCount) {
-        Node w = minimumEdge(g, v, flag);
-        nodes.push_back(w.vertex);
-        flag[w.vertex] = true;
-        v = w.vertex;
+        int w = minimumEdge(g, v, flag);
+        nodes.push_back(w);
+        flag[w] = true;
+        v = w;
     }
     nodes.push_back(0);
     return nodes;
@@ -120,12 +120,12 @@ vector<int> DFS(ALGraph &g) {
     while (!list.empty()) {
         int u = list.top();
         bool found = false;
-        for (Node n : g.getEdges(u)) {
-            if (!visited[n.vertex]) {
+        for (auto n : g.getNeighbours(u)) {
+            if (!visited[n.first]) {
                 ++next;
-                order[n.vertex] = next;
-                list.push(n.vertex);
-                visited[n.vertex] = true;
+                order[n.first] = next;
+                list.push(n.first);
+                visited[n.first] = true;
                 found = true;
                 break;
             }
@@ -143,12 +143,14 @@ pair<vector<int>, int> heuristicAGM(ALGraph &g) {
     order.push_back(0);
     int total_weight = 0;
     for (int i = 0; i < order.size() - 1; ++i) {
-        for (Node n : g.getEdges(order[i])) {
-            if (n.vertex == order[i + 1]) {
-                total_weight += n.weight;
+        for (auto n : g.getNeighbours(order[i])) {
+            if (n.first == order[i + 1]) {
+                total_weight += n.second;
                 break;
             }
         }
     }
+    order.pop_back();
+
     return make_pair(order, total_weight);
 }

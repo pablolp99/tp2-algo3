@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <bits/stdc++.h>
+#include <unordered_map>
 
 using namespace std;
 
@@ -22,12 +23,12 @@ struct Edge {
     Weight weight;
 };
 
-struct Node {
-    Node(Vertex _v, Weight _w) : vertex(_v), weight(_w) {}
-
-    Vertex vertex;
-    Weight weight;
-};
+//struct Node {
+//    Node(Vertex _v, Weight _w) : vertex(_v), weight(_w) {}
+//
+//    Vertex vertex;
+//    Weight weight;
+//};
 
 class ALGraph {
 public:
@@ -37,11 +38,9 @@ public:
 
     void addEdge(Vertex u, Vertex v, Weight w);
 
-    void addSimpleEdge(Vertex u, Vertex v, Weight w);
+    int getNeighbour(Vertex u, Vertex v);
 
-    Node getEdge(Vertex u, Vertex v);
-
-    vector<Node> getEdges(Vertex u);
+    unordered_map<Vertex, Weight> getNeighbours(Vertex u);
 
     vector<Edge> getIncidenceList();
 
@@ -49,13 +48,12 @@ public:
 
 private:
     int nodeCount;
-    vector<vector<Node>> neighbours;
+//    vector<vector<Node>> neighbours;
+    vector<unordered_map<Vertex, Weight>> neighbours;
     vector<Edge> incidenceList;
 
     void _sortAL();
 };
-
-bool sortByVertex(const Node &a, const Node &b);
 
 bool sortByWeight(const Edge &a, const Edge &b);
 
