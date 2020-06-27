@@ -1,12 +1,10 @@
-//
-// Created by pablo on 6/19/20.
-//
-
 #ifndef CODE_ALGORITHMS_H
 #define CODE_ALGORITHMS_H
 
 #include "graphs.h"
 #include <vector>
+
+#define UNDEFINED (-1)
 
 ALGraph readALGraph();
 
@@ -25,8 +23,9 @@ ALGraph kruskalMST(ALGraph g);
 
 vector<int> DFS(ALGraph &g);
 
-pair<vector<int>, int> heuristicAGM(ALGraph &g);
+//pair<vector<int>, int> heuristicAGM(ALGraph &g);
+ALGraph heuristicAGM(ALGraph &g);
 
-void tabuSearch(ALGraph &g, int memSize);
+void tabuSearchExplored(ALGraph &g, ALGraph (*foo)(ALGraph&), int memSize, int terminationCond);
 
 #endif //CODE_ALGORITHMS_H

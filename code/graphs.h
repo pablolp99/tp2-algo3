@@ -23,13 +23,6 @@ struct Edge {
     Weight weight;
 };
 
-//struct Node {
-//    Node(Vertex _v, Weight _w) : vertex(_v), weight(_w) {}
-//
-//    Vertex vertex;
-//    Weight weight;
-//};
-
 class ALGraph {
 public:
     ALGraph(int n);
@@ -37,6 +30,8 @@ public:
     int getNodeCount();
 
     void addEdge(Vertex u, Vertex v, Weight w);
+
+    Edge getEdge(Vertex u, Vertex v);
 
     int getNeighbour(Vertex u, Vertex v);
 
@@ -46,14 +41,17 @@ public:
 
     void sortAL();
 
+    void swapEdge(ALGraph& g, Edge, Edge);
+
 private:
     int nodeCount;
-//    vector<vector<Node>> neighbours;
     vector<unordered_map<Vertex, Weight>> neighbours;
+//    Puto el que lee
     vector<Edge> incidenceList;
     int totalWeight;
 
     void _sortAL();
+    void _deleteEdge(Edge);
 };
 
 bool sortByWeight(const Edge &a, const Edge &b);
