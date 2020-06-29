@@ -159,21 +159,17 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
     }
 
     ALGraph temp;
-    int ik=0;
     for (int i = 0; i < g.getNodeCount(); ++i){
         for (int j = 0; j < g.getNodeCount(); ++j){
             if (i != heaviest.start && i != heaviest.end &&
                 j != heaviest.start && j != heaviest.end &&
                 i < j){
                 if (cycle.getNeighbours(i).find(j) != cycle.getNeighbours(i).end()){
-                    cout << i << " " << j << " ";
-                    cout << heaviest.start << " " << heaviest.end << " " << heaviest.weight << endl;
                     temp = cycle;
                     temp.swapEdge(g, heaviest, g.getEdge(i, j));
                     vicinity.push_back(temp);
                 }
             }
-            ++ik;
         }
     }
 
