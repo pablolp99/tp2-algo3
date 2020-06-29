@@ -148,7 +148,7 @@ ALGraph heuristicAGM(ALGraph &g) {
 vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
 //    Arista mas pesada
     vector<ALGraph> vicinity;
-    vector<ALGraph> bestVicinity(10);
+    vector<ALGraph> bestVicinity;
     Edge heaviest(UNDEFINED, UNDEFINED, UNDEFINED);
     for (int i = 0; i < cycle.getNodeCount(); ++i){
         for (auto e : cycle.getNeighbours(i)){
@@ -158,20 +158,27 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
         }
     }
 
+    ALGraph temp;
+    int ik=0;
     for (int i = 0; i < g.getNodeCount(); ++i){
         for (int j = 0; j < g.getNodeCount(); ++j){
             if (i != heaviest.start && i != heaviest.end &&
                 j != heaviest.start && j != heaviest.end &&
                 i < j){
-                ALGraph temp = cycle;
-                temp.swapEdge(g, heaviest, g.getEdge(i, j));
-                vicinity.push_back(temp);
+                if (cycle.getNeighbours(i).find(j) != cycle.getNeighbours(i).end()){
+                    cout << i << " " << j << " ";
+                    cout << heaviest.start << " " << heaviest.end << " " << heaviest.weight << endl;
+                    temp = cycle;
+                    temp.swapEdge(g, heaviest, g.getEdge(i, j));
+                    vicinity.push_back(temp);
+                }
             }
+            ++ik;
         }
     }
 
-    for (int cancer = 0; cancer < 10; ++cancer){
-        bestVicinity[cancer] = vicinity[cancer];
+    for (int idx = 0; idx < 10 && idx < g.getNodeCount() && idx < vicinity.size(); ++idx){
+        bestVicinity.push_back(vicinity[idx]);
     }
 
     for (int l = 0; l < vicinity.size(); ++l){
@@ -199,25 +206,57 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
    return vicinity;
 }
 
-void findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory){
-    ALGraph bestCycle = vicinity[0];
-    for (int i = 1; i < vicinity.size(); ++i){
-        if (vicinity[i].getTotalWeight() < bestCycle.getTotalWeight()){
-            bestCycle = vicinity[i];
-        }
+int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, bool flag, int& stopCond){
+    int pos;
+    if (vicinity.size() < 10){
+        pos = rand() % vicinity.size();
+    } else {
+        pos = rand() % 10;
     }
+    ALGraph randomCycle = vicinity[pos];
+    if (!flag){
+        for (int i = 0; i < memory.size(); ++i){
+            if (randomCycle.getTotalWeight() == memory[i]){
+                return -1;
+            }
+        }
+    } else {
+        ++stopCond;
+    }
+    return pos;
 }
 
-void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int terminationCond){
+void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int aspirationStall, int terminationCond, int maxIterations){
     ALGraph cycle = heuristic(g);
-    ALGraph bestYet = cycle;
 //    Memory Based: Caracteristicas de las soluciones
     vector<int> memory(memSize, UNDEFINED);
-    memory[0] = bestYet.getTotalWeight();
-    int iterations = 0;
-//    while (iterations < terminationCond){
-    vector<ALGraph> subVicinity = getHeaviestEdgeSubVicinity(g, cycle);
-//        cycle =
+    memory[0] = cycle.getTotalWeight();
+    int idx = 1;
+    int stall = 0;
+    int stopCond = 0;
+    int iter = 0;
+    vector<ALGraph> subVicinity;
 
-//    }
+    getHeaviestEdgeSubVicinity(g, cycle);
+
+    while (stopCond <= terminationCond && iter < maxIterations){
+        subVicinity = getHeaviestEdgeSubVicinity(g, cycle);
+        int pos = findBestCycle(subVicinity, memory, aspirationStall <= stall, stopCond);
+        if (pos != -1){
+            if (idx < memSize){
+                memory[idx] = subVicinity[pos].getTotalWeight();
+                ++idx;
+            }
+            if (subVicinity[pos].getTotalWeight() < cycle.getTotalWeight()){
+                cycle = subVicinity[pos];
+                stall = 0;
+                stopCond = 0;
+            }
+        } else {
+            ++stall;
+        }
+        ++iter;
+    }
+
+    int kj = 0;
 }
