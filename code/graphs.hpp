@@ -52,8 +52,14 @@ void ALGraph::sortAL() {
 void ALGraph::swapEdge(ALGraph& g, Edge e, Edge k) {
     _deleteEdge(e);
     _deleteEdge(k);
-    this->addEdge(e.start, k.end, g.getNeighbour(e.start, k.end));
-    this->addEdge(k.start, e.end, g.getNeighbour(k.start, e.end));
+    if (this->getNeighbours(k.start).find(e.end) != this->getNeighbours(k.start).end() ||
+        this->getNeighbours(k.end).find(e.start) != this->getNeighbours(k.end).end()){
+        this->addEdge(e.start, k.start, g.getNeighbour(e.start, k.start));
+        this->addEdge(k.end, e.end, g.getNeighbour(k.end, e.end));
+    } else {
+        this->addEdge(e.start, k.end, g.getNeighbour(e.start, k.end));
+        this->addEdge(k.start, e.end, g.getNeighbour(k.start, e.end));
+    }
 }
 
 void ALGraph::_deleteEdge(Edge e) {
