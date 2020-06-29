@@ -28,8 +28,8 @@ ALGraph heuristicAGM(ALGraph &g);
 
 vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle);
 
-void findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory);
+int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, bool flag, int& stopCond);
 
-void tabuSearchExplored(ALGraph &g, ALGraph (*foo)(ALGraph&), int memSize, int terminationCond);
+void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int aspirationStall, int terminationCond, int maxIteration);
 
 #endif //CODE_ALGORITHMS_H
