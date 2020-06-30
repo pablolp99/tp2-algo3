@@ -88,6 +88,7 @@ ALGraph shortestEdge(ALGraph &g) {
     return sol;
 }
 
+// O(M log(M))
 ALGraph kruskalMST(ALGraph g) {
     UnionFind uf(g.getIncidenceList().size());
     g.sortAL();
@@ -101,6 +102,7 @@ ALGraph kruskalMST(ALGraph g) {
     return sol;
 }
 
+//
 vector<int> DFS(ALGraph &g) {
     int next = 0;
     int root = 0;
@@ -145,7 +147,7 @@ ALGraph heuristicAGM(ALGraph &g) {
     return solution;
 }
 
-vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
+vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle, int vCount){
 //    Arista mas pesada
     vector<ALGraph> vicinity;
     vector<ALGraph> bestVicinity;
@@ -173,7 +175,7 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
         }
     }
 
-    for (int idx = 0; idx < 10 && idx < g.getNodeCount() && idx < vicinity.size(); ++idx){
+    for (int idx = 0; idx < vCount && idx < g.getNodeCount() && idx < vicinity.size(); ++idx){
         bestVicinity.push_back(vicinity[idx]);
     }
 
@@ -202,12 +204,12 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle){
    return vicinity;
 }
 
-int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, bool flag, int& stopCond){
+int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, int vCount, bool flag, int& stopCond){
     int pos;
-    if (vicinity.size() < 10){
+    if (vicinity.size() < vCount){
         pos = rand() % vicinity.size();
     } else {
-        pos = rand() % 10;
+        pos = rand() % vCount;
     }
     ALGraph randomCycle = vicinity[pos];
     if (!flag){
@@ -222,8 +224,9 @@ int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, bool flag, int
     return pos;
 }
 
-void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int aspirationStall, int terminationCond, int maxIterations){
+ALGraph tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int vCount, int aspirationStall, int terminationCond, int maxIterations){
     ALGraph cycle = heuristic(g);
+    ALGraph original = cycle;
 //    Memory Based: Caracteristicas de las soluciones
     vector<int> memory(memSize, UNDEFINED);
     memory[0] = cycle.getTotalWeight();
@@ -233,17 +236,25 @@ void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize,
     int iter = 0;
     vector<ALGraph> subVicinity;
 
-    getHeaviestEdgeSubVicinity(g, cycle);
-
-    while (stopCond <= terminationCond && iter < maxIterations){
-        subVicinity = getHeaviestEdgeSubVicinity(g, cycle);
-        int pos = findBestCycle(subVicinity, memory, aspirationStall <= stall, stopCond);
-        if (pos != -1){
-            if (idx < memSize){
-                memory[idx] = subVicinity[pos].getTotalWeight();
-                ++idx;
+    while (stopCond <= terminationCond && iter < maxIterations) {
+        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
+        int pos = findBestCycle(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
+        if (pos != -1) {
+            if (idx < memSize) {
+                bool save = true;
+                for (int i = 0; i < memory.size(); ++i){
+                    if (memory[i] == subVicinity[pos].getTotalWeight()){
+                        save = false;
+                        break;
+                    }
+                }
+                if (save){
+                    memory[idx] = subVicinity[pos].getTotalWeight();
+                    ++idx;
+                }
             }
-            if (subVicinity[pos].getTotalWeight() < cycle.getTotalWeight()){
+
+            if (subVicinity[pos].getTotalWeight() < cycle.getTotalWeight()) {
                 cycle = subVicinity[pos];
                 stall = 0;
                 stopCond = 0;
@@ -253,6 +264,5 @@ void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize,
         }
         ++iter;
     }
-
-    int kj = 0;
+    return cycle;
 }

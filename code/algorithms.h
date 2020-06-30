@@ -26,10 +26,10 @@ vector<int> DFS(ALGraph &g);
 //pair<vector<int>, int> heuristicAGM(ALGraph &g);
 ALGraph heuristicAGM(ALGraph &g);
 
-vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle);
+vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle, int vCount);
 
-int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, bool flag, int& stopCond);
+int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, int vCount, bool flag, int& stopCond);
 
-void tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int aspirationStall, int terminationCond, int maxIteration);
+ALGraph tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int vCount, int aspirationStall, int terminationCond, int maxIterations);
 
 #endif //CODE_ALGORITHMS_H

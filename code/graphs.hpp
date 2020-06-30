@@ -41,6 +41,10 @@ unordered_map<Vertex, Weight> ALGraph::getNeighbours(Vertex u) {
     return neighbours[u];
 }
 
+vector<unordered_map<Vertex, Weight>> ALGraph::getAllNeighbours(){
+    return neighbours;
+}
+
 vector<Edge> ALGraph::getIncidenceList() {
     return incidenceList;
 }

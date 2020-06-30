@@ -39,6 +39,8 @@ public:
 
     unordered_map<Vertex, Weight> getNeighbours(Vertex u);
 
+    vector<unordered_map<Vertex, Weight>> getAllNeighbours();
+
     vector<Edge> getIncidenceList();
 
     void sortAL();
