@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "graphs.h"
 
 using namespace std;
@@ -56,8 +57,25 @@ void ALGraph::sortAL() {
 void ALGraph::swapEdge(ALGraph& g, Edge e, Edge k) {
     _deleteEdge(e);
     _deleteEdge(k);
-    if (this->getNeighbours(k.start).find(e.end) != this->getNeighbours(k.start).end() ||
-        this->getNeighbours(k.end).find(e.start) != this->getNeighbours(k.end).end()){
+
+    Vertex l = e.start;
+    Vertex prev = e.start;
+
+    // Quiero ver que dos nodos estan en la misma componente conexa luego de desconectar las aristas seleccionadas
+    // De esta manera se que dos nodos deben ser conectados luego
+    // Recorro con l (un nodo de una de las aristas) hasta encontrar alguno de los nodos de la otra arista
+    while(l != k.start && l != k.end) {
+        // Recorro los vecinos del l actual. Quiero evitar volver al nodo ya recorrido usando prev
+        for (auto m : this->getNeighbours(l)) {
+            if (m.first != prev) {
+                prev = l;
+                l = m.first;
+                break;
+            }
+        }
+    }
+
+    if (l == k.end){
         this->addEdge(e.start, k.start, g.getNeighbour(e.start, k.start));
         this->addEdge(k.end, e.end, g.getNeighbour(k.end, e.end));
     } else {
@@ -78,4 +96,31 @@ void ALGraph::_sortAL() {
 
 int ALGraph::getTotalWeight(){
     return totalWeight;
+}
+
+// Funcion debug
+bool ALGraph::isCycle() {
+    Vertex l = 0;
+    Vertex prev = 0;
+
+    for (auto m : this->getNeighbours(l)) {
+        l = m.first;
+        break;
+    }
+    int k = 0;
+    while(k <= this->getNodeCount()) {
+        // Recorro los vecinos del l actual. Quiero evitar volver al nodo ya recorrido usando prev
+        for (auto m : this->getNeighbours(l)) {
+            if (m.first != prev) {
+                prev = l;
+                l = m.first;
+                break;
+            }
+        }
+        if(l == 0) {
+            return true;
+        }
+        k++;
+    }
+    return false;
 }

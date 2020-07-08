@@ -4,7 +4,7 @@
 #include "unionfind.hpp"
 #include <stack>
 #include <cmath>
-#include <set>
+#include <ctime>
 
 ALGraph readALGraph() {
     int n, m;
@@ -204,6 +204,63 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle, int vCoun
    return vicinity;
 }
 
+vector<ALGraph> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
+    vector<ALGraph> vicinity;
+    vector<ALGraph> bestVicinity;
+    Edge randomEdge(UNDEFINED, UNDEFINED, UNDEFINED);
+    Vertex random = rand() % g.getNodeCount();
+    int randomEdgePos = rand() % cycle.getNeighbours(random).size();
+
+    int k = 0;
+    for (auto neighbour : cycle.getNeighbours(random)) {
+        if (randomEdgePos == k) { randomEdge = Edge(random, neighbour.first, neighbour.second); }
+        ++k;
+    }
+
+    ALGraph temp;
+    for (int i = 0; i < g.getNodeCount(); ++i){
+        for (int j = 0; j < g.getNodeCount(); ++j){
+            if (i != randomEdge.start && i != randomEdge.end &&
+                j != randomEdge.start && j != randomEdge.end &&
+                i < j){
+                if (cycle.getNeighbours(i).find(j) != cycle.getNeighbours(i).end()){
+                    temp = cycle;
+                    temp.swapEdge(g, randomEdge, g.getEdge(i, j));
+                    vicinity.push_back(temp);
+                }
+            }
+        }
+    }
+
+    for (int idx = 0; idx < vCount && idx < g.getNodeCount() && idx < vicinity.size(); ++idx){
+        bestVicinity.push_back(vicinity[idx]);
+    }
+
+    for (int l = 0; l < vicinity.size(); ++l){
+        bool is_min = false;
+        int temp_best = UNDEFINED;
+        for (int p = 0; p < bestVicinity.size(); ++p){
+            if (vicinity[l].getTotalWeight() < bestVicinity[p].getTotalWeight()){
+                is_min = true;
+                temp_best = l;
+            }
+        }
+        if (is_min){
+            int temp_worse = 0;
+            int temp_idx = 0;
+            for (int k = 0; k < bestVicinity.size(); ++k){
+                if (bestVicinity[k].getTotalWeight() > temp_worse){
+                    temp_idx = k;
+                    temp_worse = bestVicinity[k].getTotalWeight();
+                }
+            }
+            bestVicinity[temp_idx] = vicinity[temp_best];
+        }
+    }
+
+   return vicinity;
+}
+
 int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, int vCount, bool flag, int& stopCond){
     int pos;
     if (vicinity.size() < vCount){
@@ -237,32 +294,33 @@ ALGraph tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSi
     vector<ALGraph> subVicinity;
 
     while (stopCond <= terminationCond && iter < maxIterations) {
-        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
+//        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
+        subVicinity = getRandomSubVicinity(g, cycle, vCount);
         int pos = findBestCycle(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
         if (pos != -1) {
             if (idx < memSize) {
-                bool save = true;
-                for (int i = 0; i < memory.size(); ++i){
-                    if (memory[i] == subVicinity[pos].getTotalWeight()){
-                        save = false;
-                        break;
-                    }
-                }
-                if (save){
-                    memory[idx] = subVicinity[pos].getTotalWeight();
-                    ++idx;
-                }
+//                Guardo en memoria el circuito elegido
+                memory[idx] = subVicinity[pos].getTotalWeight();
+                ++idx;
+            } else {
+//                Si la memoria esta llena, elijo una posicion aleatoria para reemplazar
+                idx = 0;
+                int randMemPos = rand() % memory.size();
+                memory[randMemPos] = subVicinity[pos].getTotalWeight();
             }
 
+//            Si encontre una solcion mejor que la que ya tenia hago reset de las condiciones de parada
             if (subVicinity[pos].getTotalWeight() < cycle.getTotalWeight()) {
                 cycle = subVicinity[pos];
                 stall = 0;
                 stopCond = 0;
             }
         } else {
+//            Si la solucion hallada esta en la memoria incremento la condicion para ejecutar la funcion de aspiracion
             ++stall;
         }
         ++iter;
     }
+
     return cycle;
 }

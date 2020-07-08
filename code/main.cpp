@@ -3,13 +3,23 @@
 #include "graphs.h"
 #include "unionfind.h"
 #include <vector>
+#include <ctime>
+
+#define MEM_SIZE 2000
+#define ASPIRATION_STALL 180
+#define MAX_ITERATIONS 10000
+#define MAX_VECINITY_SIZE 100
+#define TERMINATION_CONDITION 500
 
 
 int main() {
+    srand(time(NULL));
     ALGraph g = readALGraph();
 //    shortestEdge(g);
-    heuristicAGM(g);
 //    heuristicAGM(g);
+//    heuristicAGM(g);
+    ALGraph cycle = tabuSearchExplored(g, shortestEdge, MEM_SIZE, MAX_VECINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+    bool isAMotherFuckingCycle = cycle.isCycle();
     return 0;
 }
 
