@@ -4,12 +4,19 @@
 #include "unionfind.h"
 #include <vector>
 
+#define MEM_SIZE 1000
+#define ASPIRATION_STALL 200
+#define MAX_ITERATIONS 10000
+#define MAX_VECINITY_SIZE 100
+#define TERMINATION_CONDITION 500
+
 
 int main() {
     ALGraph g = readALGraph();
 //    shortestEdge(g);
-    heuristicAGM(g);
 //    heuristicAGM(g);
+//    heuristicAGM(g);
+    tabuSearchExplored(g, heuristicAGM, MEM_SIZE, MAX_VECINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
     return 0;
 }
 

@@ -6,7 +6,6 @@
 #define CODE_GRAPHS_H
 
 #include <vector>
-#include <bits/stdc++.h>
 #include <unordered_map>
 
 using namespace std;
