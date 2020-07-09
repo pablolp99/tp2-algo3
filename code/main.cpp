@@ -17,8 +17,10 @@ int main() {
     ALGraph g = readALGraph();
 //    shortestEdge(g);
 //    heuristicAGM(g);
-    ALGraph cycle = tabuSearchExplored(g, shortestEdge, MEM_SIZE, MAX_VECINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+    ALGraph cycle = tabuSearchWithStructureMemory(g, heuristicAGM, MEM_SIZE, MAX_VECINITY_SIZE,
+                                                          ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
     bool isAMotherFuckingCycle = cycle.isCycle();
+    cout << isAMotherFuckingCycle << endl;
     return 0;
 }
 

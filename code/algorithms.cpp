@@ -204,9 +204,9 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle, int vCoun
    return vicinity;
 }
 
-vector<ALGraph> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
-    vector<ALGraph> vicinity;
-    vector<ALGraph> bestVicinity;
+vector<pair<ALGraph, Swap>> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
+    vector<pair<ALGraph, Swap>> vicinity;
+    vector<pair<ALGraph, Swap>> bestVicinity;
     Edge randomEdge(UNDEFINED, UNDEFINED, UNDEFINED);
     Vertex random = rand() % g.getNodeCount();
     int randomEdgePos = rand() % cycle.getNeighbours(random).size();
@@ -226,7 +226,7 @@ vector<ALGraph> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
                 if (cycle.getNeighbours(i).find(j) != cycle.getNeighbours(i).end()){
                     temp = cycle;
                     temp.swapEdge(g, randomEdge, g.getEdge(i, j));
-                    vicinity.push_back(temp);
+                    vicinity.push_back(make_pair(temp, Swap(randomEdge, g.getEdge(i, j))));
                 }
             }
         }
@@ -240,7 +240,7 @@ vector<ALGraph> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
         bool is_min = false;
         int temp_best = UNDEFINED;
         for (int p = 0; p < bestVicinity.size(); ++p){
-            if (vicinity[l].getTotalWeight() < bestVicinity[p].getTotalWeight()){
+            if (get<0>(vicinity[l]).getTotalWeight() < get<0>(bestVicinity[p]).getTotalWeight()){
                 is_min = true;
                 temp_best = l;
             }
@@ -249,29 +249,29 @@ vector<ALGraph> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
             int temp_worse = 0;
             int temp_idx = 0;
             for (int k = 0; k < bestVicinity.size(); ++k){
-                if (bestVicinity[k].getTotalWeight() > temp_worse){
+                if (get<0>(bestVicinity[k]).getTotalWeight() > temp_worse){
                     temp_idx = k;
-                    temp_worse = bestVicinity[k].getTotalWeight();
+                    temp_worse = get<0>(bestVicinity[k]).getTotalWeight();
                 }
             }
             bestVicinity[temp_idx] = vicinity[temp_best];
         }
     }
 
-   return vicinity;
+   return bestVicinity;
 }
 
-int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, int vCount, bool flag, int& stopCond){
+int findBestCycle(vector<pair<ALGraph, Swap>>& vicinity, vector<Weight>& memory, int vCount, bool flag, int& stopCond){
     int pos;
     if (vicinity.size() < vCount){
         pos = rand() % vicinity.size();
     } else {
         pos = rand() % vCount;
     }
-    ALGraph randomCycle = vicinity[pos];
+    pair<ALGraph, Swap> randomCycle = vicinity[pos];
     if (!flag){
         for (int i = 0; i < memory.size(); ++i){
-            if (randomCycle.getTotalWeight() == memory[i]){
+            if (get<0>(randomCycle).getTotalWeight() == memory[i]){
                 return -1;
             }
         }
@@ -281,17 +281,19 @@ int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, int vCount, bo
     return pos;
 }
 
-ALGraph tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSize, int vCount, int aspirationStall, int terminationCond, int maxIterations){
+ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &), int memSize, int vCount,
+                                              int aspirationStall, int terminationCond, int maxIterations){
     ALGraph cycle = heuristic(g);
     ALGraph original = cycle;
 //    Memory Based: Caracteristicas de las soluciones
-    vector<int> memory(memSize, UNDEFINED);
+    vector<Weight> memory(memSize, UNDEFINED);
     memory[0] = cycle.getTotalWeight();
     int idx = 1;
     int stall = 0;
     int stopCond = 0;
     int iter = 0;
-    vector<ALGraph> subVicinity;
+    vector<pair<ALGraph, Swap>> subVicinity;
+    cout << cycle.getTotalWeight() << endl;
 
     while (stopCond <= terminationCond && iter < maxIterations) {
 //        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
@@ -300,18 +302,18 @@ ALGraph tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSi
         if (pos != -1) {
             if (idx < memSize) {
 //                Guardo en memoria el circuito elegido
-                memory[idx] = subVicinity[pos].getTotalWeight();
+                memory[idx] = get<0>(subVicinity[pos]).getTotalWeight();
                 ++idx;
             } else {
 //                Si la memoria esta llena, elijo una posicion aleatoria para reemplazar
                 idx = 0;
                 int randMemPos = rand() % memory.size();
-                memory[randMemPos] = subVicinity[pos].getTotalWeight();
+                memory[randMemPos] = get<0>(subVicinity[pos]).getTotalWeight();
             }
 
 //            Si encontre una solcion mejor que la que ya tenia hago reset de las condiciones de parada
-            if (subVicinity[pos].getTotalWeight() < cycle.getTotalWeight()) {
-                cycle = subVicinity[pos];
+            if (get<0>(subVicinity[pos]).getTotalWeight() < cycle.getTotalWeight()) {
+                cycle = get<0>(subVicinity[pos]);
                 stall = 0;
                 stopCond = 0;
             }
@@ -321,6 +323,76 @@ ALGraph tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSi
         }
         ++iter;
     }
+
+    cout << cycle.getTotalWeight() << endl;
+
+    return cycle;
+}
+
+int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>>& vicinity, vector<Swap>& memory, int vCount, bool flag, int& stopCond){
+    int pos;
+    if (vicinity.size() < vCount){
+        pos = rand() % vicinity.size();
+    } else {
+        pos = rand() % vCount;
+    }
+
+    if (!flag){
+        for (int i = 0; i < memory.size(); ++i){
+            if (get<1>(vicinity[pos]) == memory[i]){
+                return -1;
+            }
+        }
+    } else {
+        ++stopCond;
+    }
+    return pos;
+}
+
+ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &), int memSize, int vCount,
+                                              int aspirationStall, int terminationCond, int maxIterations){
+    ALGraph cycle = heuristic(g);
+    ALGraph original = cycle;
+//    Memory Based: Caracteristicas de las soluciones
+    vector<Swap> memory(memSize, Swap(Edge(UNDEFINED, UNDEFINED, UNDEFINED), Edge(UNDEFINED, UNDEFINED, UNDEFINED)));
+    //memory[0] = cycle.getTotalWeight();
+    int idx = 1;
+    int stall = 0;
+    int stopCond = 0;
+    int iter = 0;
+    vector<pair<ALGraph, Swap>> subVicinity;
+    cout << cycle.getTotalWeight() << endl;
+
+    while (stopCond <= terminationCond && iter < maxIterations) {
+//        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
+        subVicinity = getRandomSubVicinity(g, cycle, vCount);
+        int pos = findBestCycleWithSwapMemory(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
+        if (pos != -1) {
+            if (idx < memSize) {
+//                Guardo en memoria el circuito elegido
+                memory[idx] = get<1>(subVicinity[pos]);
+                ++idx;
+            } else {
+//                Si la memoria esta llena, elijo una posicion aleatoria para reemplazar
+                idx = 0;
+                int randMemPos = rand() % memory.size();
+                memory[randMemPos] = get<1>(subVicinity[pos]);
+            }
+
+//            Si encontre una solcion mejor que la que ya tenia hago reset de las condiciones de parada
+            if (get<0>(subVicinity[pos]).getTotalWeight() < cycle.getTotalWeight()) {
+                cycle = get<0>(subVicinity[pos]);
+                stall = 0;
+                stopCond = 0;
+            }
+        } else {
+//            Si la solucion hallada esta en la memoria incremento la condicion para ejecutar la funcion de aspiracion
+            ++stall;
+        }
+        ++iter;
+    }
+
+    cout << cycle.getTotalWeight() << endl;
 
     return cycle;
 }
