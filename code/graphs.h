@@ -20,6 +20,11 @@ struct Edge {
     Vertex start;
     Vertex end;
     Weight weight;
+
+    bool operator==(Edge other) {
+        return ((start == other.start && end == other.end) || (start == other.end && end == other.start))
+                && weight == other.weight;
+    }
 };
 
 class ALGraph {
