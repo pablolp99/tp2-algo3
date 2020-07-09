@@ -17,7 +17,6 @@ int main() {
     ALGraph g = readALGraph();
 //    shortestEdge(g);
 //    heuristicAGM(g);
-//    heuristicAGM(g);
     ALGraph cycle = tabuSearchExplored(g, shortestEdge, MEM_SIZE, MAX_VECINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
     bool isAMotherFuckingCycle = cycle.isCycle();
     return 0;
