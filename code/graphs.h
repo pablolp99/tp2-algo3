@@ -48,6 +48,8 @@ public:
 
     int getTotalWeight();
 
+    bool isCycle();
+
 private:
     int nodeCount;
     vector<unordered_map<Vertex, Weight>> neighbours;

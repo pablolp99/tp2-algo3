@@ -4,7 +4,7 @@
 #include "unionfind.hpp"
 #include <stack>
 #include <cmath>
-#include <set>
+#include <ctime>
 
 ALGraph readALGraph() {
     int n, m;
@@ -209,7 +209,6 @@ vector<ALGraph> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
     vector<ALGraph> bestVicinity;
     Edge randomEdge(UNDEFINED, UNDEFINED, UNDEFINED);
     Vertex random = rand() % g.getNodeCount();
-    cout << "Vertex random: " << random << endl;
     int randomEdgePos = rand() % cycle.getNeighbours(random).size();
 
     int k = 0;
@@ -259,7 +258,7 @@ vector<ALGraph> getRandomSubVicinity(ALGraph& g, ALGraph& cycle, int vCount) {
         }
     }
 
-    return vicinity;
+   return vicinity;
 }
 
 int findBestCycle(vector<ALGraph>& vicinity, vector<int>& memory, int vCount, bool flag, int& stopCond){
@@ -300,20 +299,24 @@ ALGraph tabuSearchExplored(ALGraph &g, ALGraph (*heuristic)(ALGraph&), int memSi
         int pos = findBestCycle(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
         if (pos != -1) {
             if (idx < memSize) {
+//                Guardo en memoria el circuito elegido
                 memory[idx] = subVicinity[pos].getTotalWeight();
                 ++idx;
             } else {
+//                Si la memoria esta llena, elijo una posicion aleatoria para reemplazar
                 idx = 0;
                 int randMemPos = rand() % memory.size();
                 memory[randMemPos] = subVicinity[pos].getTotalWeight();
             }
 
+//            Si encontre una solcion mejor que la que ya tenia hago reset de las condiciones de parada
             if (subVicinity[pos].getTotalWeight() < cycle.getTotalWeight()) {
                 cycle = subVicinity[pos];
                 stall = 0;
                 stopCond = 0;
             }
         } else {
+//            Si la solucion hallada esta en la memoria incremento la condicion para ejecutar la funcion de aspiracion
             ++stall;
         }
         ++iter;
