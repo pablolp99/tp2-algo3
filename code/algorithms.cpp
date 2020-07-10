@@ -285,8 +285,9 @@ int findBestCycle(vector<pair<ALGraph, Swap>> &vicinity, vector<Weight> &memory,
     return pos;
 }
 
-ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &), int memSize, int vCount,
-                                              int aspirationStall, int terminationCond, int maxIterations) {
+ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &),
+                                              vector<pair<ALGraph, Swap>> (*getSubVecinity)(ALGraph&, ALGraph&, int),
+                                              int memSize, int vCount, int aspirationStall, int terminationCond, int maxIterations) {
     ALGraph cycle = heuristic(g);
     ALGraph original = cycle;
 //    Memory Based: Caracteristicas de las soluciones
@@ -301,7 +302,8 @@ ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(A
 
     while (stopCond <= terminationCond && iter < maxIterations) {
 //        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
-        subVicinity = getRandomSubVicinity(g, cycle, vCount);
+        //subVicinity = getRandomSubVicinity(g, cycle, vCount);
+        subVicinity = getSubVecinity(g, cycle, vCount);
         int pos = findBestCycle(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
         if (pos != -1) {
             if (idx < memSize) {
@@ -354,8 +356,9 @@ int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>> &vicinity, vector<Sw
     return pos;
 }
 
-ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &), int memSize, int vCount,
-                                      int aspirationStall, int terminationCond, int maxIterations) {
+ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &),
+                                        vector<pair<ALGraph, Swap>> (*getSubVecinity)(ALGraph&, ALGraph&, int),
+                                        int memSize, int vCount, int aspirationStall, int terminationCond, int maxIterations) {
     ALGraph cycle = heuristic(g);
     ALGraph original = cycle;
 //    Memory Based: Caracteristicas de las soluciones
@@ -370,7 +373,8 @@ ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &
 
     while (stopCond <= terminationCond && iter < maxIterations) {
 //        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
-        subVicinity = getRandomSubVicinity(g, cycle, vCount);
+        //subVicinity = getRandomSubVicinity(g, cycle, vCount);
+        subVicinity = getSubVecinity(g, cycle, vCount);
         int pos = findBestCycleWithSwapMemory(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
         if (pos != -1) {
             if (idx < memSize) {

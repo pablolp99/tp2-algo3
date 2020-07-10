@@ -33,16 +33,21 @@ vector<int> DFS(ALGraph &g);
 
 ALGraph heuristicAGM(ALGraph &g);
 
-vector<pair<ALGraph, Swap>> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle, int vCount);
+vector<pair<ALGraph, Swap>> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCount);
 
-int findBestCycle(vector<pair<ALGraph, Swap>>& vicinity, vector<int>& memory, int vCount, bool flag, int& stopCond);
+int findBestCycle(vector<pair<ALGraph, Swap>> &vicinity, vector<int> &memory, int vCount, bool flag, int &stopCond);
 
-int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>>& vicinity, vector<Swap>& memory, int vCount, bool flag, int& stopCond);
+int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>> &vicinity, vector<Swap> &memory, int vCount, bool flag,
+                                int &stopCond);
 
-ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &), int memSize, int vCount,
-                                                                                                                                                         int aspirationStall, int terminationCond, int maxIterations);
-
-ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &), int memSize, int vCount,
+ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &),
+                                              vector<pair<ALGraph, Swap>> (*getSubVecinity)(ALGraph &, ALGraph &, int),
+                                              int memSize, int vCount,
                                               int aspirationStall, int terminationCond, int maxIterations);
+
+ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &),
+                                      vector<pair<ALGraph, Swap>> (*getSubVecinity)(ALGraph &, ALGraph &, int),
+                                      int memSize, int vCount,
+                                      int aspirationStall, int terminationCond, int maxIterations);
 
 #endif //CODE_ALGORITHMS_H
