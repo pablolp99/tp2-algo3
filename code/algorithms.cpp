@@ -301,8 +301,6 @@ ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(A
     cout << cycle.getTotalWeight() << endl;
 
     while (stopCond <= terminationCond && iter < maxIterations) {
-//        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
-        //subVicinity = getRandomSubVicinity(g, cycle, vCount);
         subVicinity = getSubVecinity(g, cycle, vCount);
         int pos = findBestCycle(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
         if (pos != -1) {
@@ -372,8 +370,6 @@ ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &
     cout << cycle.getTotalWeight() << endl;
 
     while (stopCond <= terminationCond && iter < maxIterations) {
-//        subVicinity = getHeaviestEdgeSubVicinity(g, cycle, vCount);
-        //subVicinity = getRandomSubVicinity(g, cycle, vCount);
         subVicinity = getSubVecinity(g, cycle, vCount);
         int pos = findBestCycleWithSwapMemory(subVicinity, memory, vCount, aspirationStall <= stall, stopCond);
         if (pos != -1) {
