@@ -33,7 +33,7 @@ vector<int> DFS(ALGraph &g);
 
 ALGraph heuristicAGM(ALGraph &g);
 
-vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle, int vCount);
+vector<pair<ALGraph, Swap>> getHeaviestEdgeSubVicinity(ALGraph& g, ALGraph& cycle, int vCount);
 
 int findBestCycle(vector<pair<ALGraph, Swap>>& vicinity, vector<int>& memory, int vCount, bool flag, int& stopCond);
 

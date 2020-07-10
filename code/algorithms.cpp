@@ -112,7 +112,7 @@ vector<Vertex> neighboursToVisit(ALGraph &g, vector<bool> &visited, Vertex v) {
     return toVisit;
 }
 
-vector<int> DFS(ALGraph &g) {
+vector<Vertex> DFS(ALGraph &g) {
     vector<int> order;
     vector<bool> visited(g.getNodeCount(), false);
     stack<Vertex> depth;
@@ -140,8 +140,9 @@ vector<int> DFS(ALGraph &g) {
 
 ALGraph heuristicAGM(ALGraph &g) {
     ALGraph temp_graph = kruskalMST(g);
-    vector<int> order = DFS(temp_graph);
     ALGraph solution(g.getNodeCount());
+    vector<Vertex> order = DFS(temp_graph);
+
     order.push_back(0);
     for (int i = 0; i < order.size() - 1; ++i) {
         solution.addEdge(order[i], order[i + 1], g.getNeighbour(order[i], order[i + 1]));
@@ -150,10 +151,10 @@ ALGraph heuristicAGM(ALGraph &g) {
     return solution;
 }
 
-vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCount) {
+vector<pair<ALGraph, Swap>> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCount) {
 //    Arista mas pesada
-    vector<ALGraph> vicinity;
-    vector<ALGraph> bestVicinity;
+    vector<pair<ALGraph, Swap>> vicinity;
+    vector<pair<ALGraph, Swap>> bestVicinity;
     Edge heaviest(UNDEFINED, UNDEFINED, UNDEFINED);
     for (int i = 0; i < cycle.getNodeCount(); ++i) {
         for (auto e : cycle.getNeighbours(i)) {
@@ -172,7 +173,7 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCoun
                 if (cycle.getNeighbours(i).find(j) != cycle.getNeighbours(i).end()) {
                     temp = cycle;
                     temp.swapEdge(g, heaviest, g.getEdge(i, j));
-                    vicinity.push_back(temp);
+                    vicinity.push_back(make_pair(temp, Swap(heaviest, g.getEdge(i, j))));
                 }
             }
         }
@@ -186,7 +187,7 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCoun
         bool is_min = false;
         int temp_best = UNDEFINED;
         for (int p = 0; p < bestVicinity.size(); ++p) {
-            if (vicinity[l].getTotalWeight() < bestVicinity[p].getTotalWeight()) {
+            if (get<0>(vicinity[l]).getTotalWeight() < get<0>(bestVicinity[p]).getTotalWeight()) {
                 is_min = true;
                 temp_best = l;
             }
@@ -195,9 +196,9 @@ vector<ALGraph> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCoun
             int temp_worse = 0;
             int temp_idx = 0;
             for (int k = 0; k < bestVicinity.size(); ++k) {
-                if (bestVicinity[k].getTotalWeight() > temp_worse) {
+                if (get<0>(bestVicinity[k]).getTotalWeight() > temp_worse) {
                     temp_idx = k;
-                    temp_worse = bestVicinity[k].getTotalWeight();
+                    temp_worse = get<0>(bestVicinity[k]).getTotalWeight();
                 }
             }
             bestVicinity[temp_idx] = vicinity[temp_best];
