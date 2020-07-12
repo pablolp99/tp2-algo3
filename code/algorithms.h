@@ -19,35 +19,35 @@ struct Swap {
 
 ALGraph readALGraph();
 
-void closeCircuit(ALGraph g, vector<Edge> &sol, vector<Degree> deg);
-
 ALGraph shortestEdge(ALGraph &g);
-
-vector<int> minimumEdge(ALGraph &g, int &v, vector<bool> &flag);
 
 ALGraph nearestNeighbour(ALGraph &g);
 
 ALGraph kruskalMST(ALGraph g);
 
-vector<int> DFS(ALGraph &g);
-
 ALGraph heuristicAGM(ALGraph &g);
 
-vector<pair<ALGraph, Swap>> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCount);
-
-int findBestCycle(vector<pair<ALGraph, Swap>> &vicinity, vector<int> &memory, int vCount, bool flag, int &stopCond);
-
-int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>> &vicinity, vector<Swap> &memory, int vCount, bool flag,
-                                int &stopCond);
-
 ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &),
-                                              vector<pair<ALGraph, Swap>> (*getSubVecinity)(ALGraph &, ALGraph &, int),
-                                              int memSize, int vCount,
+                                              vector<pair<ALGraph, Swap>> (*getSubVicinity)(ALGraph &, ALGraph &, int),
+                                              int memSize, int vicinitySize,
                                               int aspirationStall, int terminationCond, int maxIterations);
 
 ALGraph tabuSearchWithStructureMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &),
-                                      vector<pair<ALGraph, Swap>> (*getSubVecinity)(ALGraph &, ALGraph &, int),
-                                      int memSize, int vCount,
+                                      vector<pair<ALGraph, Swap>> (*getSubVicinity)(ALGraph &, ALGraph &, int),
+                                      int memSize, int vicinitySize,
                                       int aspirationStall, int terminationCond, int maxIterations);
+
+vector<int> DFS(ALGraph &g);
+
+vector<int> minimumEdge(ALGraph &g, int &v, vector<bool> &flag);
+
+vector<pair<ALGraph, Swap>> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCount);
+
+int findBestCycle(vector<pair<ALGraph, Swap>> &vicinity, vector<int> &memory, int vicinitySize, bool flag, int &stopCond);
+
+int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>> &vicinity, vector<Swap> &memory, int vicinitySize, bool flag,
+                                int &stopCond);
+
+void closeCircuit(ALGraph g, vector<Edge> &sol, vector<Degree> deg);
 
 #endif //CODE_ALGORITHMS_H
