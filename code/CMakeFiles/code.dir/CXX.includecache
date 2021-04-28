@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/algorithms.h
+graphs.h
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/graphs.h
+vector
+-
+
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/graphs.h
+vector
+-
+unordered_map
+-
+
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/main.cpp
+chrono
+-
+iostream
+-
+vector
+-
+string
+-
+algorithms.h
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/algorithms.h
+graphs.h
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/graphs.h
+unionfind.h
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/unionfind.h
+
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/unionfind.h
+vector
+-
+

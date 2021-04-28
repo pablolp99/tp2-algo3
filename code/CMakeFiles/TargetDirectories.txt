@@ -1,0 +1,3 @@
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/CMakeFiles/rebuild_cache.dir
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/CMakeFiles/code.dir
+/home/pablo/pablo/academico/UBA/comp2020/algo-3/tp2/code/CMakeFiles/edit_cache.dir

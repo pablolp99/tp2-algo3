@@ -1,0 +1,118 @@
+#include <chrono>
+#include <iostream>
+#include <vector>
+#include "algorithms.h"
+#include "graphs.h"
+#include "unionfind.h"
+
+#define MEM_SIZE 200
+#define ASPIRATION_STALL 150
+#define MAX_ITERATIONS 3500
+#define MAX_VICINITY_SIZE 100
+#define TERMINATION_CONDITION 300
+
+// 1 -> AGM
+// 2 -> SE
+// 3 -> NN
+// 4 -> TSESM con 1
+// 5 -> TSESM con 2
+// 6 -> TSESM con 3
+// 7 -> TSWSM con 1
+// 8 -> TSWSM con 2
+// 9 -> TSWSM con 3
+
+int main() {
+    srand(time(NULL));
+    
+    int testRepeats, function;
+    cin >> testRepeats >> function;
+
+    ALGraph g = readALGraph();
+
+    for (int i = 0; i < testRepeats; ++i){
+		if (function == 1){
+			cout << "AGM " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();
+			ALGraph cycle = heuristicAGM(g);
+		    auto t2 = chrono::high_resolution_clock::now();
+		    auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		    cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << endl;
+
+	    } else if (function == 2){
+	    	cout << "SE " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();
+			ALGraph cycle = shortestEdge(g);
+			auto t2 = chrono::high_resolution_clock::now();
+		    auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		    cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << endl;
+
+	    } else if (function == 3){
+	    	cout << "NN " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();
+			ALGraph cycle = nearestNeighbour(g);
+			auto t2 = chrono::high_resolution_clock::now();
+			auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+			cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << endl;
+
+	    } else if (function == 4){
+	    	cout << "TSESM_AGM " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();
+			ALGraph cycle = tabuSearchWithExploredSolutionsMemory(g, heuristicAGM, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+			auto t2 = chrono::high_resolution_clock::now();
+			auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+			cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+			cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+
+	    } else if (function == 5){
+	    	cout << "TSESM_SE " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();	    	
+	    	ALGraph cycle = tabuSearchWithExploredSolutionsMemory(g, shortestEdge, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+			auto t2 = chrono::high_resolution_clock::now();
+			auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+			cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+			cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+
+	    } else if (function == 6){
+	    	cout << "TSESM_NN " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();	    	
+	    	ALGraph cycle = tabuSearchWithExploredSolutionsMemory(g, nearestNeighbour, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+			auto t2 = chrono::high_resolution_clock::now();
+			auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+			cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+			cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;    	
+
+	    } else if (function == 7){
+	    	cout << "TSWSM_AGM " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();	    	
+	    	ALGraph cycle = tabuSearchWithStructureMemory(g, heuristicAGM, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+			auto t2 = chrono::high_resolution_clock::now();
+			auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+			cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+			cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+
+	    } else if (function == 8){
+	    	cout << "TSWSM_SE " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();	    	
+	    	ALGraph cycle = tabuSearchWithStructureMemory(g, shortestEdge, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+			auto t2 = chrono::high_resolution_clock::now();
+			auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+			cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+			cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+
+	    } else if (function == 9){
+	    	cout << "TSWSM_NN " << i+1 << " ";
+			auto t1 = chrono::high_resolution_clock::now();	    	
+	    	ALGraph cycle = tabuSearchWithStructureMemory(g, nearestNeighbour, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+			auto t2 = chrono::high_resolution_clock::now();
+			auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+			cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+			cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+
+	    } else {
+	    	cout << "NO FUNCTION WITH id: " << function << " QUITING JOB" << endl;
+	    	return 0;
+	    }
+    }
+
+    return 0;
+}

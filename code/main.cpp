@@ -1,50 +1,96 @@
-#include "algorithms.h"
+#include <chrono>
 #include <iostream>
+#include <vector>
+#include <string>
+#include "algorithms.h"
 #include "graphs.h"
 #include "unionfind.h"
-#include <vector>
-#include <ctime>
 
-#define MEM_SIZE 2000
-#define ASPIRATION_STALL 180
-#define MAX_ITERATIONS 10000
-#define MAX_VECINITY_SIZE 100
-#define TERMINATION_CONDITION 500
 
+#define MEM_SIZE 300 // Variar +- 100
+#define ASPIRATION_STALL 150 // Variar +- 50-100
+#define MAX_ITERATIONS 3500 // No hace falta variar
+#define MAX_VICINITY_SIZE 100
+#define TERMINATION_CONDITION 300 // Variar +- 100
+
+// 1 -> AGM
+// 2 -> SE
+// 3 -> NN
+// 4 -> TSESM con 1
+// 5 -> TSESM con 2
+// 6 -> TSESM con 3
+// 7 -> TSWSM con 1
+// 8 -> TSWSM con 2
+// 9 -> TSWSM con 3
 
 int main() {
     srand(time(NULL));
+    
+    int testRepeats;
+    string testCase;
+    cin >> testRepeats >> testCase;
+
     ALGraph g = readALGraph();
-//    shortestEdge(g);
-//    heuristicAGM(g);
-    ALGraph cycle = tabuSearchWithStructureMemory(g, heuristicAGM, MEM_SIZE, MAX_VECINITY_SIZE,
-                                                          ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
-    bool isAMotherFuckingCycle = cycle.isCycle();
-    cout << isAMotherFuckingCycle << endl;
+
+    for (int i = 0; i < testRepeats; ++i){
+    	cout << testCase << " " << "TSESM_AGM " << i+1 << " ";
+		auto t1 = chrono::high_resolution_clock::now();
+		ALGraph cycle = tabuSearchWithExploredSolutionsMemory(g, heuristicAGM, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+		auto t2 = chrono::high_resolution_clock::now();
+		auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+		cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+	}
+
+	for (int i = 0; i < testRepeats; ++i){
+    	cout << testCase << " " << "TSESM_SE " << i+1 << " ";
+		auto t1 = chrono::high_resolution_clock::now();	    	
+    	ALGraph cycle = tabuSearchWithExploredSolutionsMemory(g, shortestEdge, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+		auto t2 = chrono::high_resolution_clock::now();
+		auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+		cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+	}
+
+	for (int i = 0; i < testRepeats; ++i){
+    	cout << testCase << " " << "TSESM_NN " << i+1 << " ";
+		auto t1 = chrono::high_resolution_clock::now();	    	
+    	ALGraph cycle = tabuSearchWithExploredSolutionsMemory(g, nearestNeighbour, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+		auto t2 = chrono::high_resolution_clock::now();
+		auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+		cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;	
+	}
+
+	for (int i = 0; i < testRepeats; ++i){
+    	cout << testCase << " " << "TSWSM_AGM " << i+1 << " ";
+		auto t1 = chrono::high_resolution_clock::now();	    	
+    	ALGraph cycle = tabuSearchWithStructureMemory(g, heuristicAGM, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+		auto t2 = chrono::high_resolution_clock::now();
+		auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+		cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+	}
+
+	for (int i = 0; i < testRepeats; ++i){
+    	cout << testCase << " " << "TSWSM_SE " << i+1 << " ";
+		auto t1 = chrono::high_resolution_clock::now();	    	
+    	ALGraph cycle = tabuSearchWithStructureMemory(g, shortestEdge, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+		auto t2 = chrono::high_resolution_clock::now();
+		auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+		cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+	}
+
+	for (int i = 0; i < testRepeats; ++i){
+    	cout << testCase << " " << "TSWSM_NN " << i+1 << " ";
+		auto t1 = chrono::high_resolution_clock::now();	    	
+    	ALGraph cycle = tabuSearchWithStructureMemory(g, nearestNeighbour, getRandomSubVicinity, MEM_SIZE, MAX_VICINITY_SIZE, ASPIRATION_STALL, TERMINATION_CONDITION, MAX_ITERATIONS);
+		auto t2 = chrono::high_resolution_clock::now();
+		auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+		cout << cycle.getNodeCount() << " " << cycle.getTotalWeight() << " " << duration << " ";
+		cout << MEM_SIZE << " " << ASPIRATION_STALL << " " << MAX_ITERATIONS << " " << MAX_VICINITY_SIZE << " " << TERMINATION_CONDITION << endl;
+    }
+
     return 0;
 }
-
-//4 6
-//1 2 50
-//1 3 40
-//1 4 10
-//2 3 20
-//2 4 30
-//3 4 15
-
-//6 15
-//1 2 2
-//1 3 3
-//1 4 3
-//1 5 1
-//1 6 4
-//2 3 3
-//2 4 3
-//2 5 3
-//2 6 3
-//3 4 5
-//3 5 4
-//3 6 5
-//4 5 2
-//4 6 2
-//5 6 3

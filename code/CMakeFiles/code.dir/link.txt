@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/code.dir/main.cpp.o CMakeFiles/code.dir/algorithms.cpp.o  -o code 

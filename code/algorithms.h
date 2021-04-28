@@ -35,10 +35,11 @@ ALGraph heuristicAGM(ALGraph &g);
 
 vector<pair<ALGraph, Swap>> getHeaviestEdgeSubVicinity(ALGraph &g, ALGraph &cycle, int vCount);
 
+vector<pair<ALGraph, Swap>> getRandomSubVicinity(ALGraph &g, ALGraph &cycle, int vCount);
+
 int findBestCycle(vector<pair<ALGraph, Swap>> &vicinity, vector<int> &memory, int vCount, bool flag, int &stopCond);
 
-int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>> &vicinity, vector<Swap> &memory, int vCount, bool flag,
-                                int &stopCond);
+int findBestCycleWithSwapMemory(vector<pair<ALGraph, Swap>> &vicinity, vector<Swap> &memory, int vCount, bool flag, int &stopCond);
 
 ALGraph tabuSearchWithExploredSolutionsMemory(ALGraph &g, ALGraph (*heuristic)(ALGraph &),
                                               vector<pair<ALGraph, Swap>> (*getSubVecinity)(ALGraph &, ALGraph &, int),

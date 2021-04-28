@@ -32,3 +32,7 @@ def create_test(n):
 
 if __name__ == '__main__':
 	create_test(10)
+	create_test(100)
+	create_test(200)
+	create_test(300)
+	create_test(350)
